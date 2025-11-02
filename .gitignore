@@ -1,0 +1,5 @@
+goreleaser-mcp
+coverage.html
+coverage.out
+# Added by goreleaser init:
+dist/

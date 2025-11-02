@@ -1,28 +1,61 @@
 package main
 
 import (
-	"github.com/modelcontextprotocol/go-sdk/mcp"
-	"github.com/spf13/cobra"
+	"context"
+	_ "embed"
+	"os"
+	"sync"
+
+	goversion "github.com/caarlos0/go-version"
+	"github.com/charmbracelet/fang"
 )
 
-var Version = "unknown"
+//nolint:gochecknoglobals
+var (
+	version   = ""
+	commit    = ""
+	treeState = ""
+	date      = ""
+	builtBy   = ""
+)
 
-var cmd = &cobra.Command{
-	Use:               "goreleaser-mcp",
-	Short:             "The GoReleaser MCP server",
-	SilenceUsage:      true,
-	SilenceErrors:     true,
-	Args:              cobra.NoArgs,
-	ValidArgsFunction: cobra.NoFileCompletions,
-	RunE: func(cmd *cobra.Command, _ []string) error {
-		server := mcp.NewServer(&mcp.Implementation{
-			Name:    "goreleaser",
-			Version: Version,
-		}, nil)
+var versionOnce = sync.OnceValue(func() goversion.Info {
+	return goversion.GetVersionInfo(
+		goversion.WithAppDetails("goreleaser-pro", "Release engineering, simplified.", website),
+		goversion.WithASCIIName(asciiArt),
+		func(i *goversion.Info) {
+			if commit != "" {
+				i.GitCommit = commit
+			}
+			if treeState != "" {
+				i.GitTreeState = treeState
+			}
+			if date != "" {
+				i.BuildDate = date
+			}
+			if version != "" {
+				i.GitVersion = version
+			}
+			if builtBy != "" {
+				i.BuiltBy = builtBy
+			}
+		},
+	)
+})
 
-		return server.Run(cmd.Context(), &mcp.StdioTransport{})
-	},
-}
+const website = "https://goreleaser.com/mcp"
+
+//go:embed art.txt
+var asciiArt string
 
 func main() {
+	if err := fang.Execute(
+		context.Background(),
+		cmd,
+		fang.WithVersion(versionOnce().String()),
+		fang.WithoutCompletions(),
+		fang.WithoutManpage(),
+	); err != nil {
+		os.Exit(1)
+	}
 }
