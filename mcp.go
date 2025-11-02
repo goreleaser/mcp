@@ -8,6 +8,8 @@ import (
 	"slices"
 	"strings"
 
+	"github.com/goreleaser/goreleaser-mcp/internal/yaml"
+	"github.com/goreleaser/goreleaser-pro/v2/pkg/config"
 	"github.com/modelcontextprotocol/go-sdk/mcp"
 )
 
@@ -52,9 +54,10 @@ type (
 // the default names.
 //
 // The caller is responsible for closing the returned file.
-func openConfig(name string) (*os.File, error) {
+func openConfig(name string) (string, []byte, error) {
 	if name != "" {
-		return os.Open(name)
+		bts, err := os.ReadFile(name)
+		return name, bts, err
 	}
 
 	for _, name := range [6]string{
@@ -65,31 +68,30 @@ func openConfig(name string) (*os.File, error) {
 		"goreleaser.yml",
 		"goreleaser.yaml",
 	} {
-		f, err := os.Open(name)
+		bts, err := os.ReadFile(name)
 		if err == nil {
-			return f, nil
+			return name, bts, err
 		}
 	}
 
-	return nil, fmt.Errorf("could not find any configuration file")
+	return "", nil, fmt.Errorf("could not find any configuration file")
 }
 
 func checkTool(ctx context.Context, _ *mcp.CallToolRequest, args checkArgs) (*mcp.CallToolResult, checkOutput, error) {
-	f, err := openConfig(args.Configuration)
+	name, bts, err := openConfig(args.Configuration)
 	if err != nil {
 		return nil, checkOutput{}, fmt.Errorf("could not check configuration: %w", err)
 	}
-	defer f.Close()
 
-	cfg, err := parse(f)
-	if err != nil {
-		return nil, checkOutput{}, fmt.Errorf("invalid configuration file: %w", err)
+	var cfg config.Project
+	if err := yaml.UnmarshalStrict(bts, &cfg); err != nil {
+		return nil, checkOutput{}, fmt.Errorf("invalid configuration file: %s: %w", name, err)
 	}
 
 	deprecations := findDeprecated(cfg)
 	if len(deprecations) == 0 {
 		return nil, checkOutput{
-			Message: fmt.Sprintf("Configuration at %q is valid!", f.Name()),
+			Message: fmt.Sprintf("Configuration at %q is valid!", name),
 		}, nil
 	}
 
@@ -98,5 +100,7 @@ func checkTool(ctx context.Context, _ *mcp.CallToolRequest, args checkArgs) (*mc
 	for _, key := range slices.Collect(maps.Keys(deprecations)) {
 		sb.WriteString(fmt.Sprintf("## %s\n\nInstructions: %s\n\n", key, instructions[key]))
 	}
-	return nil, checkOutput{Message: sb.String()}, nil
+	return nil, checkOutput{
+		Message: sb.String(),
+	}, nil
 }

@@ -2,7 +2,6 @@ package main
 
 import (
 	"reflect"
-	"strings"
 	"testing"
 
 	"github.com/goreleaser/goreleaser-pro/v2/pkg/config"
@@ -37,14 +36,13 @@ builds:
 
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			r := strings.NewReader(tt.input)
-			proj, err := Parse(r)
+			proj, err := parse([]byte(tt.input))
 			if (err != nil) != tt.wantErr {
-				t.Errorf("Parse() error = %v, wantErr %v", err, tt.wantErr)
+				t.Errorf("parse() error = %v, wantErr %v", err, tt.wantErr)
 				return
 			}
 			if !tt.wantErr && proj == nil {
-				t.Error("Parse() returned nil project without error")
+				t.Error("parse() returned nil project without error")
 			}
 		})
 	}
@@ -93,13 +91,13 @@ func TestCheckDeprecated(t *testing.T) {
 
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			got := CheckDeprecated(tt.proj)
+			got := findDeprecated(tt.proj)
 			if len(got) != len(tt.want) {
-				t.Errorf("CheckDeprecated() returned %d fields, want %d: %v", len(got), len(tt.want), got)
+				t.Errorf("findDeprecated() returned %d fields, want %d: %v", len(got), len(tt.want), got)
 			}
 			for _, field := range tt.want {
 				if _, ok := got[field]; !ok {
-					t.Errorf("CheckDeprecated() missing expected field: %s", field)
+					t.Errorf("findDeprecated() missing expected field: %s", field)
 				}
 			}
 		})
@@ -113,21 +111,20 @@ kos:
   - id: test-ko
     repository: ghcr.io/owner/repo
 `
-	r := strings.NewReader(input)
-	proj, err := Parse(r)
+	proj, err := parse([]byte(input))
 	if err != nil {
-		t.Fatalf("Parse() error = %v", err)
+		t.Fatalf("parse() error = %v", err)
 	}
 
-	deprecated := CheckDeprecated(proj)
+	deprecated := findDeprecated(proj)
 	if len(deprecated) == 0 {
-		t.Error("CheckDeprecated() expected to find deprecated fields, got none")
+		t.Error("findDeprecated() expected to find deprecated fields, got none")
 	}
 
 	expectedFields := []string{"kos.repository"}
 	for _, field := range expectedFields {
 		if _, ok := deprecated[field]; !ok {
-			t.Errorf("CheckDeprecated() missing expected deprecated field: %s", field)
+			t.Errorf("findDeprecated() missing expected deprecated field: %s", field)
 		}
 	}
 }
@@ -279,13 +276,13 @@ func TestCheckDeprecatedFields_Nested(t *testing.T) {
 
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			got := CheckDeprecated(tt.proj)
+			got := findDeprecated(tt.proj)
 			if len(got) != len(tt.want) {
-				t.Errorf("CheckDeprecated() returned %d fields, want %d: %v", len(got), len(tt.want), got)
+				t.Errorf("findDeprecated() returned %d fields, want %d: %v", len(got), len(tt.want), got)
 			}
 			for _, field := range tt.want {
 				if _, ok := got[field]; !ok {
-					t.Errorf("CheckDeprecated() missing expected field: %s", field)
+					t.Errorf("findDeprecated() missing expected field: %s", field)
 				}
 			}
 		})
@@ -342,13 +339,12 @@ kos:
 
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			r := strings.NewReader(tt.input)
-			proj, err := Parse(r)
+			proj, err := parse([]byte(tt.input))
 			if err != nil {
-				t.Fatalf("Parse() error = %v", err)
+				t.Fatalf("parse() error = %v", err)
 			}
 			if !tt.checkFunc(proj) {
-				t.Errorf("Parse() project validation failed")
+				t.Errorf("parse() project validation failed")
 			}
 		})
 	}
@@ -356,9 +352,9 @@ kos:
 
 func TestCheckDeprecated_EmptyProject(t *testing.T) {
 	proj := &config.Project{}
-	deprecated := CheckDeprecated(proj)
+	deprecated := findDeprecated(proj)
 	if len(deprecated) != 0 {
-		t.Errorf("CheckDeprecated() on empty project returned fields: %v", deprecated)
+		t.Errorf("findDeprecated() on empty project returned fields: %v", deprecated)
 	}
 }
 
@@ -368,9 +364,9 @@ func TestCheckDeprecated_NilSlices(t *testing.T) {
 		Builds:      nil,
 		Kos:         nil,
 	}
-	deprecated := CheckDeprecated(proj)
+	deprecated := findDeprecated(proj)
 	if len(deprecated) != 0 {
-		t.Errorf("CheckDeprecated() with nil slices returned fields: %v", deprecated)
+		t.Errorf("findDeprecated() with nil slices returned fields: %v", deprecated)
 	}
 }
 
@@ -488,6 +484,75 @@ func TestIsZero_AdditionalTypes(t *testing.T) {
 				t.Errorf("isZero() = %v, want %v for %T(%v)", got, tt.want, tt.val, tt.val)
 			}
 		})
+	}
+}
+
+func TestParse_GoReleaserYAML(t *testing.T) {
+	yamlContent := `
+version: 2
+
+builds:
+  - id: default
+    env:
+      - CGO_ENABLED=0
+    goos:
+      - linux
+      - windows
+      - darwin
+
+archives:
+  - id: default
+    formats:
+      - tar.gz
+
+changelog:
+  sort: asc
+  filters:
+    exclude:
+      - "^docs:"
+`
+
+	proj, err := parse([]byte(yamlContent))
+	if err != nil {
+		t.Fatalf("parse() error = %v", err)
+	}
+
+	if proj == nil {
+		t.Fatal("parse() returned nil project")
+	}
+
+	if proj.Version != 2 {
+		t.Errorf("Expected version 2, got %d", proj.Version)
+	}
+
+	if len(proj.Builds) == 0 {
+		t.Error("Expected at least one build")
+	}
+
+	if len(proj.Builds) > 0 {
+		build := proj.Builds[0]
+		expectedGoos := []string{"linux", "windows", "darwin"}
+		if len(build.Goos) != len(expectedGoos) {
+			t.Errorf("Expected %d goos entries, got %d", len(expectedGoos), len(build.Goos))
+		}
+		for i, goos := range expectedGoos {
+			if i < len(build.Goos) && build.Goos[i] != goos {
+				t.Errorf("Expected goos[%d] = %s, got %s", i, goos, build.Goos[i])
+			}
+		}
+	}
+
+	if len(proj.Archives) == 0 {
+		t.Error("Expected at least one archive")
+	}
+
+	if proj.Changelog.Sort != "asc" {
+		t.Errorf("Expected changelog sort 'asc', got %s", proj.Changelog.Sort)
+	}
+
+	deprecated := findDeprecated(proj)
+	if len(deprecated) > 0 {
+		t.Errorf("Found deprecated fields in test config: %v", deprecated)
 	}
 }
 

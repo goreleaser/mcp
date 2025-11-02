@@ -1,26 +1,25 @@
 package main
 
 import (
-	"io"
 	"reflect"
 	"strings"
 
+	"github.com/goreleaser/goreleaser-mcp/internal/yaml"
 	"github.com/goreleaser/goreleaser-pro/v2/pkg/config"
-	"go.yaml.in/yaml/v4"
 )
 
-// parse reads a goreleaser configuration from an io.Reader and returns a config.Project.
-func parse(r io.Reader) (*config.Project, error) {
-	var proj config.Project
-	if err := yaml.NewDecoder(r).Decode(&proj); err != nil {
+// parse reads a goreleaser configuration from a byte slice and returns a config.Project.
+func parse(in []byte) (*config.Project, error) {
+	var out config.Project
+	if err := yaml.UnmarshalStrict(in, &out); err != nil {
 		return nil, err
 	}
-	return &proj, nil
+	return &out, nil
 }
 
 // findDeprecated returns a map of deprecated fields that have non-zero values.
 // The keys are the composed field names (e.g., 'archives.builds', 'brews').
-func findDeprecated(cfg *config.Project) map[string]struct{} {
+func findDeprecated(cfg config.Project) map[string]struct{} {
 	deprecated := make(map[string]struct{})
 	checkDeprecatedFields(reflect.ValueOf(cfg).Elem(), "", deprecated)
 	return deprecated
