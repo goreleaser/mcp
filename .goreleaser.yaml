@@ -3,20 +3,29 @@
 
 # The lines below are called `modelines`. See `:help modeline`
 # Feel free to remove those if you don't want/need to use them.
-# yaml-language-server: $schema=https://goreleaser.com/static/schema.json
+# yaml-language-server: $schema=https://goreleaser.com/static/schema-pro.json
 # vim: set ts=2 sw=2 tw=0 fo=cnqoj
 
 version: 2
 
+pro: true
+
+project_name: mcp
+metadata:
+  mod_timestamp: "{{ .CommitTimestamp }}"
+  description: GoReleaser MCP server
+  homepage: https://goreleaser.com/mcp
+  license: MIT
+  maintainers:
+    - Carlos Alexandro Becker <carlos@becker.software>
+
 before:
   hooks:
-    # You may remove this if you don't use go modules.
     - go mod tidy
-    # you may remove this if you don't need go generate
-    - go generate ./...
 
 builds:
-  - env:
+  - binary: goreleaser-mcp
+    env:
       - CGO_ENABLED=0
     goos:
       - linux
@@ -25,7 +34,6 @@ builds:
 
 archives:
   - formats: [tar.gz]
-    # this name template makes the OS and Arch compatible with the results of `uname`.
     name_template: >-
       {{ .ProjectName }}_
       {{- title .Os }}_
@@ -33,21 +41,125 @@ archives:
       {{- else if eq .Arch "386" }}i386
       {{- else }}{{ .Arch }}{{ end }}
       {{- if .Arm }}v{{ .Arm }}{{ end }}
-    # use zip for windows archives
     format_overrides:
       - goos: windows
         formats: [zip]
 
+dockers_v2:
+  - images:
+      - "ghcr.io/goreleaser/mcp"
+    tags:
+      - latest
+      - "{{ .Version }}"
+    labels:
+      "org.opencontainers.image.description": "{{.Metadata.Description}}"
+      "org.opencontainers.image.created": "{{.Date}}"
+      "org.opencontainers.image.name": "{{.ProjectName}}"
+      "org.opencontainers.image.revision": "{{.FullCommit}}"
+      "org.opencontainers.image.version": "{{.Version}}"
+      "org.opencontainers.image.source": "https://github.com/goreleaser/mcp"
+    annotations:
+      "org.opencontainers.image.description": "{{.Metadata.Description}}"
+
+homebrew_casks:
+  - repository:
+      owner: goreleaser
+      name: homebrew-tap
+    alternative_names: ["{{ .ProjectName }}@{{.Major}}"]
+    license: MIT
+    url:
+      verified: github.com/goreleaser/mcp/releases/download
+
+npms:
+  - name: "@goreleaser/mcp"
+    repository: https://github.com/goreleaser/mcp
+    bugs: https://github.com/goreleaser/mcp/issues
+    keywords:
+      - goreleaser
+      - mcp
+
+sboms:
+  - artifacts: archive
+
+signs:
+  - cmd: cosign
+    certificate: "${artifact}.pem"
+    output: true
+    artifacts: checksum
+    args:
+      - sign-blob
+      - "--output-certificate=${certificate}"
+      - "--output-signature=${signature}"
+      - "${artifact}"
+      - --yes
+
+docker_signs:
+  - cmd: cosign
+    artifacts: manifests
+    output: true
+    args:
+      - "sign"
+      - "${artifact}@${digest}"
+      - --yes
+
 changelog:
   sort: asc
+  use: git
+  divider: "---"
   filters:
     exclude:
-      - "^docs:"
       - "^test:"
+      - "^test\\("
+      - "^chore: update$"
+      - "^chore: docs$"
+      - "^docs: update$"
+      - "^chore: schema$"
+      - "^chore: typo$"
+      - "^chore: auto-update generated files$"
+      - "^chore: update schema$"
+      - "^chore: schema update$"
+      - "^chore\\(deps\\): "
+      - "^(build|ci): "
+      - "^(build|ci)\\(.*\\): "
+      - "merge conflict"
+      - "merge conflict"
+      - Merge pull request
+      - Merge remote-tracking branch
+      - Merge branch
+      - go mod tidy
+  groups:
+    - title: "New features"
+      regexp: '^.*?feat(\(.+\))??!?:.+$'
+      order: 100
+    - title: "Security updates"
+      regexp: '^.*?sec(\(.+\))??!?:.+$'
+      order: 150
+    - title: "Bug fixes"
+      regexp: '^.*?(fix|refactor|refactory|test)(\(.+\))??!?:.+$'
+      order: 200
+    - title: "Documentation updates"
+      regexp: ^.*?docs?(\(.+\))??!?:.+$
+      order: 400
+    - title: Other work
+      order: 9999
 
 release:
-  footer: >-
+  name_template: "{{ .Tag }}"
+  footer: |
+    **Full Changelog**: https://github.com/goreleaser/mcp/compare/{{ .PreviousTag }}...{{ if .IsNightly }}nightly{{ else }}{{ .Tag }}{{ end }}
 
-    ---
+    {{ if not .IsNightly }}
+    ## Helping out
 
-    Released by [GoReleaser](https://github.com/goreleaser/goreleaser).
+    This release is only possible thanks to **all** the support of some **awesome people**!
+
+    Want to be one of them?
+    You can [sponsor](https://goreleaser.com/sponsors/), get a [Pro License](https://goreleaser.com/pro) or [contribute with code](https://goreleaser.com/contributing).
+
+    ## Where to go next?
+
+    * Find examples and commented usage of all options in our [website](https://goreleaser.com/intro/).
+    * Reach out on [Discord](https://discord.gg/RGEBtg8vQ6) and [Twitter](https://twitter.com/goreleaser)!
+
+    <a href="https://goreleaser.com"><img src="https://raw.githubusercontent.com/goreleaser/artwork/master/opencollective-header.png" with="100%" alt="GoReleaser logo"></a>
+    {{ end }}

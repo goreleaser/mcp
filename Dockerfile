@@ -1,4 +1,4 @@
 FROM scratch
 ARG TARGETPLATFORM
-ENTRYPOINT [ "/usr/bin/example" ]
-COPY $TARGETPLATFORM/example /usr/bin/example
+ENTRYPOINT [ "/usr/bin/goreleaser-mcp" ]
+COPY $TARGETPLATFORM/goreleaser-mcp /usr/bin/goreleaser-mcp

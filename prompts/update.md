@@ -13,6 +13,8 @@ The resource paths to look at are:
 - `docs://deprecations.md`
 - `docs://customization/{feature name}.md`
 
+Once you have all the information you need, resolve all the deprecations.
+
 # 2. Add YAML schema annotation
 
 While we are at it, let's also add the schema annotation to the top of the GoReleaser configuration file, as below:
