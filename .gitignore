@@ -1,5 +1,6 @@
 goreleaser-mcp
 coverage.html
 coverage.out
+.task/
 # Added by goreleaser init:
 dist/

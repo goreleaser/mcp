@@ -1,69 +1,31 @@
 package main
 
 import (
+	"os"
 	"reflect"
 	"testing"
 
+	"github.com/goreleaser/goreleaser-mcp/internal/yaml"
 	"github.com/goreleaser/goreleaser-pro/v2/pkg/config"
+	"github.com/stretchr/testify/require"
 )
-
-func TestParse(t *testing.T) {
-	tests := []struct {
-		name    string
-		input   string
-		wantErr bool
-	}{
-		{
-			name: "valid config",
-			input: `
-project_name: test
-builds:
-  - binary: test
-`,
-			wantErr: false,
-		},
-		{
-			name:    "invalid yaml",
-			input:   `invalid: [`,
-			wantErr: true,
-		},
-		{
-			name:    "empty config",
-			input:   `{}`,
-			wantErr: false,
-		},
-	}
-
-	for _, tt := range tests {
-		t.Run(tt.name, func(t *testing.T) {
-			proj, err := parse([]byte(tt.input))
-			if (err != nil) != tt.wantErr {
-				t.Errorf("parse() error = %v, wantErr %v", err, tt.wantErr)
-				return
-			}
-			if !tt.wantErr && proj == nil {
-				t.Error("parse() returned nil project without error")
-			}
-		})
-	}
-}
 
 func TestCheckDeprecated(t *testing.T) {
 	tests := []struct {
 		name string
-		proj *config.Project
+		proj config.Project
 		want []string
 	}{
 		{
 			name: "no deprecated fields",
-			proj: &config.Project{
+			proj: config.Project{
 				ProjectName: "test",
 			},
 			want: []string{},
 		},
 		{
 			name: "deprecated ko repository field",
-			proj: &config.Project{
+			proj: config.Project{
 				ProjectName: "test",
 				Kos: []config.Ko{
 					{
@@ -76,7 +38,7 @@ func TestCheckDeprecated(t *testing.T) {
 		},
 		{
 			name: "non-deprecated fields set",
-			proj: &config.Project{
+			proj: config.Project{
 				ProjectName: "test",
 				Builds: []config.Build{
 					{
@@ -111,9 +73,9 @@ kos:
   - id: test-ko
     repository: ghcr.io/owner/repo
 `
-	proj, err := parse([]byte(input))
-	if err != nil {
-		t.Fatalf("parse() error = %v", err)
+	var proj config.Project
+	if err := yaml.UnmarshalStrict([]byte(input), &proj); err != nil {
+		t.Fatalf("unmarshal error = %v", err)
 	}
 
 	deprecated := findDeprecated(proj)
@@ -132,7 +94,7 @@ kos:
 func TestIsZero(t *testing.T) {
 	tests := []struct {
 		name string
-		val  interface{}
+		val  any
 		want bool
 	}{
 		{
@@ -231,12 +193,12 @@ func TestIsZero(t *testing.T) {
 func TestCheckDeprecatedFields_Nested(t *testing.T) {
 	tests := []struct {
 		name string
-		proj *config.Project
+		proj config.Project
 		want []string
 	}{
 		{
 			name: "multiple ko items with deprecated repository",
-			proj: &config.Project{
+			proj: config.Project{
 				ProjectName: "test",
 				Kos: []config.Ko{
 					{
@@ -253,7 +215,7 @@ func TestCheckDeprecatedFields_Nested(t *testing.T) {
 		},
 		{
 			name: "empty slice no deprecated",
-			proj: &config.Project{
+			proj: config.Project{
 				ProjectName: "test",
 				Builds:      []config.Build{},
 			},
@@ -261,7 +223,7 @@ func TestCheckDeprecatedFields_Nested(t *testing.T) {
 		},
 		{
 			name: "slice with non-deprecated values",
-			proj: &config.Project{
+			proj: config.Project{
 				ProjectName: "test",
 				Builds: []config.Build{
 					{
@@ -293,14 +255,14 @@ func TestParse_ValidatesStructure(t *testing.T) {
 	tests := []struct {
 		name      string
 		input     string
-		checkFunc func(*config.Project) bool
+		checkFunc func(config.Project) bool
 	}{
 		{
 			name: "parses project name",
 			input: `
 project_name: myproject
 `,
-			checkFunc: func(p *config.Project) bool {
+			checkFunc: func(p config.Project) bool {
 				return p.ProjectName == "myproject"
 			},
 		},
@@ -312,7 +274,7 @@ builds:
   - id: build1
     binary: mybinary
 `,
-			checkFunc: func(p *config.Project) bool {
+			checkFunc: func(p config.Project) bool {
 				return len(p.Builds) == 1 && p.Builds[0].ID == "build1"
 			},
 		},
@@ -331,7 +293,7 @@ kos:
   - id: ko1
     repository: ghcr.io/owner/repo
 `,
-			checkFunc: func(p *config.Project) bool {
+			checkFunc: func(p config.Project) bool {
 				return p.ProjectName == "test" && len(p.Builds) == 1 && len(p.Kos) == 1
 			},
 		},
@@ -339,9 +301,9 @@ kos:
 
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			proj, err := parse([]byte(tt.input))
-			if err != nil {
-				t.Fatalf("parse() error = %v", err)
+			var proj config.Project
+			if err := yaml.UnmarshalStrict([]byte(tt.input), &proj); err != nil {
+				t.Fatalf("unmarshal error = %v", err)
 			}
 			if !tt.checkFunc(proj) {
 				t.Errorf("parse() project validation failed")
@@ -351,7 +313,7 @@ kos:
 }
 
 func TestCheckDeprecated_EmptyProject(t *testing.T) {
-	proj := &config.Project{}
+	proj := config.Project{}
 	deprecated := findDeprecated(proj)
 	if len(deprecated) != 0 {
 		t.Errorf("findDeprecated() on empty project returned fields: %v", deprecated)
@@ -359,7 +321,7 @@ func TestCheckDeprecated_EmptyProject(t *testing.T) {
 }
 
 func TestCheckDeprecated_NilSlices(t *testing.T) {
-	proj := &config.Project{
+	proj := config.Project{
 		ProjectName: "test",
 		Builds:      nil,
 		Kos:         nil,
@@ -374,7 +336,7 @@ func TestIsZero_Struct(t *testing.T) {
 	type testStruct struct {
 		Value string
 	}
-	
+
 	tests := []struct {
 		name string
 		val  testStruct
@@ -487,75 +449,13 @@ func TestIsZero_AdditionalTypes(t *testing.T) {
 	}
 }
 
-func TestParse_GoReleaserYAML(t *testing.T) {
-	yamlContent := `
-version: 2
-
-builds:
-  - id: default
-    env:
-      - CGO_ENABLED=0
-    goos:
-      - linux
-      - windows
-      - darwin
-
-archives:
-  - id: default
-    formats:
-      - tar.gz
-
-changelog:
-  sort: asc
-  filters:
-    exclude:
-      - "^docs:"
-`
-
-	proj, err := parse([]byte(yamlContent))
-	if err != nil {
-		t.Fatalf("parse() error = %v", err)
-	}
-
-	if proj == nil {
-		t.Fatal("parse() returned nil project")
-	}
-
-	if proj.Version != 2 {
-		t.Errorf("Expected version 2, got %d", proj.Version)
-	}
-
-	if len(proj.Builds) == 0 {
-		t.Error("Expected at least one build")
-	}
-
-	if len(proj.Builds) > 0 {
-		build := proj.Builds[0]
-		expectedGoos := []string{"linux", "windows", "darwin"}
-		if len(build.Goos) != len(expectedGoos) {
-			t.Errorf("Expected %d goos entries, got %d", len(expectedGoos), len(build.Goos))
-		}
-		for i, goos := range expectedGoos {
-			if i < len(build.Goos) && build.Goos[i] != goos {
-				t.Errorf("Expected goos[%d] = %s, got %s", i, goos, build.Goos[i])
-			}
-		}
-	}
-
-	if len(proj.Archives) == 0 {
-		t.Error("Expected at least one archive")
-	}
-
-	if proj.Changelog.Sort != "asc" {
-		t.Errorf("Expected changelog sort 'asc', got %s", proj.Changelog.Sort)
-	}
-
-	deprecated := findDeprecated(proj)
-	if len(deprecated) > 0 {
-		t.Errorf("Found deprecated fields in test config: %v", deprecated)
-	}
-}
-
 func ptrString(s string) *string {
 	return &s
+}
+
+func TestParseConfig(t *testing.T) {
+	in, err := os.ReadFile("./.goreleaser.yaml")
+	require.NoError(t, err)
+	var proj config.Project
+	require.NoError(t, yaml.UnmarshalStrict(in, &proj))
 }

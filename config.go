@@ -4,24 +4,14 @@ import (
 	"reflect"
 	"strings"
 
-	"github.com/goreleaser/goreleaser-mcp/internal/yaml"
 	"github.com/goreleaser/goreleaser-pro/v2/pkg/config"
 )
-
-// parse reads a goreleaser configuration from a byte slice and returns a config.Project.
-func parse(in []byte) (*config.Project, error) {
-	var out config.Project
-	if err := yaml.UnmarshalStrict(in, &out); err != nil {
-		return nil, err
-	}
-	return &out, nil
-}
 
 // findDeprecated returns a map of deprecated fields that have non-zero values.
 // The keys are the composed field names (e.g., 'archives.builds', 'brews').
 func findDeprecated(cfg config.Project) map[string]struct{} {
 	deprecated := make(map[string]struct{})
-	checkDeprecatedFields(reflect.ValueOf(cfg).Elem(), "", deprecated)
+	checkDeprecatedFields(reflect.ValueOf(&cfg).Elem(), "", deprecated)
 	return deprecated
 }
 
@@ -32,20 +22,17 @@ func checkDeprecatedFields(v reflect.Value, prefix string, deprecated map[string
 		field := v.Field(i)
 		fieldType := t.Field(i)
 
-		// Skip unexported fields
 		if !field.CanInterface() {
 			continue
 		}
 
-		// Get the yaml tag name
 		yamlTag := fieldType.Tag.Get("yaml")
 		if yamlTag == "" || yamlTag == "-" {
 			continue
 		}
-		// Remove omitempty and other options
+
 		yamlName := strings.Split(yamlTag, ",")[0]
 
-		// Build the composed name
 		var composedName string
 		if prefix == "" {
 			composedName = yamlName
@@ -53,25 +40,27 @@ func checkDeprecatedFields(v reflect.Value, prefix string, deprecated map[string
 			composedName = prefix + "." + yamlName
 		}
 
-		// Check if field has "deprecated=true" in jsonschema tag
 		isDeprecated := strings.Contains(fieldType.Tag.Get("jsonschema"), "deprecated")
 
-		// Check if the field is non-zero
 		if isDeprecated && !isZero(field) {
 			deprecated[composedName] = struct{}{}
+			continue
 		}
 
-		// Recursively check nested structs
 		if field.Kind() == reflect.Struct {
 			checkDeprecatedFields(field, composedName, deprecated)
-		} else if field.Kind() == reflect.Slice {
+			continue
+		}
+		if field.Kind() == reflect.Slice {
 			for j := 0; j < field.Len(); j++ {
 				elem := field.Index(j)
 				if elem.Kind() == reflect.Struct {
 					checkDeprecatedFields(elem, composedName, deprecated)
 				}
 			}
-		} else if field.Kind() == reflect.Pointer && !field.IsNil() {
+			continue
+		}
+		if field.Kind() == reflect.Pointer && !field.IsNil() {
 			if field.Elem().Kind() == reflect.Struct {
 				checkDeprecatedFields(field.Elem(), composedName, deprecated)
 			}

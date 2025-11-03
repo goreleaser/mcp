@@ -2,7 +2,9 @@ package main
 
 import (
 	"context"
+	"embed"
 	"fmt"
+	"io/fs"
 	"maps"
 	"os"
 	"slices"
@@ -11,19 +13,84 @@ import (
 	"github.com/goreleaser/goreleaser-mcp/internal/yaml"
 	"github.com/goreleaser/goreleaser-pro/v2/pkg/config"
 	"github.com/modelcontextprotocol/go-sdk/mcp"
+	"github.com/spf13/cobra"
 )
 
-const updatePrompt = `Let's update the goreleaser configuration to latest.
+//go:embed docs
+var docs embed.FS
 
-We can use the goreleaser check command to grab the deprecation notices and how to fix them.
+//go:embed prompts/update.md
+var updatePrompt string
 
-If that's not enough, use the documentation resources to find out more details.
-The resource paths to look at are:
+var cmd = &cobra.Command{
+	Use:               "goreleaser-mcp",
+	Short:             "The GoReleaser MCP server",
+	SilenceUsage:      true,
+	SilenceErrors:     true,
+	Args:              cobra.NoArgs,
+	ValidArgsFunction: cobra.NoFileCompletions,
+	RunE: func(cmd *cobra.Command, _ []string) error {
+		server := mcp.NewServer(&mcp.Implementation{
+			Name:    "goreleaser",
+			Version: versionOnce().GitVersion,
+		}, nil)
 
-- docs://deprecataions.md
-- docs://customization/{feature name}.md
-- docs://old-deprecataions.md (this one only if updating between goreleaser major versions)
-`
+		server.AddPrompt(&mcp.Prompt{
+			Name:  "update_config",
+			Title: "Updates your GoReleaser configuration, getting rid of deprecations",
+		}, func(context.Context, *mcp.GetPromptRequest) (*mcp.GetPromptResult, error) {
+			return &mcp.GetPromptResult{
+				Messages: []*mcp.PromptMessage{
+					{
+						Content: &mcp.TextContent{Text: updatePrompt},
+						Role:    mcp.Role("user"),
+					},
+				},
+			}, nil
+		})
+
+		fsys, err := fs.Sub(docs, "docs")
+		if err != nil {
+			return err
+		}
+		if err := fs.WalkDir(fsys, ".", func(path string, d fs.DirEntry, err error) error {
+			if d.IsDir() || !strings.HasSuffix(path, ".md") {
+				return err
+			}
+
+			server.AddResource(&mcp.Resource{
+				Meta:        mcp.Meta{},
+				Annotations: &mcp.Annotations{},
+				Description: "",
+				MIMEType:    "text/markdown",
+				Name:        path,
+				URI:         "docs://" + path,
+			}, func(ctx context.Context, req *mcp.ReadResourceRequest) (*mcp.ReadResourceResult, error) {
+				bts, err := fs.ReadFile(fsys, path)
+				if err != nil {
+					return nil, mcp.ResourceNotFoundError(req.Params.URI)
+				}
+				return &mcp.ReadResourceResult{
+					Contents: []*mcp.ResourceContents{{
+						URI:  req.Params.URI,
+						Text: string(bts),
+					}},
+				}, nil
+			})
+
+			return nil
+		}); err != nil {
+			return err
+		}
+
+		mcp.AddTool(server, &mcp.Tool{
+			Name:        "check",
+			Description: "Checks a GoReleaser configuration for errors or deprecations",
+		}, checkTool)
+
+		return server.Run(cmd.Context(), &mcp.StdioTransport{})
+	},
+}
 
 var instructions = map[string]string{
 	"archives.builds":                  "replace `builds` with `ids`",

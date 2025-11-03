@@ -1,0 +1,19 @@
+# https://taskfile.dev
+
+version: "3"
+
+env:
+  GO111MODULE: on
+  GOPROXY: https://proxy.golang.org,direct
+
+tasks:
+  sync:
+    desc: Sync config
+    sources:
+      - ../goreleaser/www/docs/
+    generates:
+      - ./pkg/config/
+    cmds:
+      - mkdir -p docs
+      - cp -rf ../goreleaser/www/docs/customization ./docs/
+      - cp -rf ../goreleaser/www/docs/deprecations.md ./docs/
