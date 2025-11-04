@@ -45,6 +45,27 @@ archives:
       - goos: windows
         formats: [zip]
 
+nfpms:
+  - file_name_template: "{{ .ConventionalFileName }}"
+    vendor: GoReleaser
+    section: utils
+    mtime: "{{ .CommitDate }}"
+    contents:
+      - src: ./LICENSE.md
+        dst: /usr/share/doc/goreleaser/copyright
+        file_info:
+          mode: 0644
+          mtime: "{{ .CommitDate }}"
+    formats:
+      - apk
+      - deb
+      - rpm
+      - archlinux
+    deb:
+      lintian_overrides:
+        - statically-linked-binary
+        - changelog-file-missing-in-native-package
+
 dockers_v2:
   - images:
       - "ghcr.io/goreleaser/mcp"
@@ -70,6 +91,16 @@ homebrew_casks:
     url:
       verified: github.com/goreleaser/mcp/releases/download
 
+aurs:
+  - private_key: "{{ .Env.AUR_KEY }}"
+    git_url: "ssh://aur@aur.archlinux.org/goreleaser-mcp-bin.git"
+    package: |-
+      # bin
+      install -Dm755 "./goreleaser-mcp" "${pkgdir}/usr/bin/goreleaser-mcp"
+
+      # license
+      install -Dm644 "./LICENSE.md" "${pkgdir}/usr/share/licenses/goreleaser-mcp/LICENSE"
+
 npms:
   - name: "@goreleaser/mcp"
     repository: https://github.com/goreleaser/mcp
@@ -80,6 +111,20 @@ npms:
 
 sboms:
   - artifacts: archive
+
+universal_binaries:
+  - replace: false
+
+notarize:
+  macos:
+    - enabled: '{{ isEnvSet "MACOS_SIGN_P12" }}'
+      sign:
+        certificate: "{{.Env.MACOS_SIGN_P12}}"
+        password: "{{.Env.MACOS_SIGN_PASSWORD}}"
+      notarize:
+        issuer_id: "{{.Env.MACOS_NOTARY_ISSUER_ID}}"
+        key_id: "{{.Env.MACOS_NOTARY_KEY_ID}}"
+        key: "{{.Env.MACOS_NOTARY_KEY}}"
 
 signs:
   - cmd: cosign
@@ -163,3 +208,7 @@ release:
 
     <a href="https://goreleaser.com"><img src="https://raw.githubusercontent.com/goreleaser/artwork/master/opencollective-header.png" with="100%" alt="GoReleaser logo"></a>
     {{ end }}
+
+furies:
+  - account: goreleaser
+    disable: "{{ .IsNightly }}"
