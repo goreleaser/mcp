@@ -5,7 +5,7 @@ Here's your tasks:
 
 Let's update the GoReleaser configuration to latest.
 
-We can use the GoReleaser's MCP `check` tool to grab the deprecation notices, and how to fix them.
+You should have a tool called `check` available (coming from the GoReleaser MCP), use it to grab the deprecation notices and how to fix them.
 
 If that's not enough, use the documentation resources to find out more details.
 The resource paths to look at are:

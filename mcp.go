@@ -16,11 +16,11 @@ import (
 	"github.com/spf13/cobra"
 )
 
-//go:embed docs
-var docs embed.FS
-
 //go:embed prompts/update.md
 var updatePrompt string
+
+//go:embed docs
+var docs embed.FS
 
 var cmd = &cobra.Command{
 	Use:               "goreleaser-mcp",
@@ -48,6 +48,11 @@ var cmd = &cobra.Command{
 				},
 			}, nil
 		})
+
+		mcp.AddTool(server, &mcp.Tool{
+			Name:        "check",
+			Description: "Checks a GoReleaser configuration for errors or deprecations",
+		}, checkTool)
 
 		fsys, err := fs.Sub(docs, "docs")
 		if err != nil {
@@ -83,11 +88,6 @@ var cmd = &cobra.Command{
 			return err
 		}
 
-		mcp.AddTool(server, &mcp.Tool{
-			Name:        "check",
-			Description: "Checks a GoReleaser configuration for errors or deprecations",
-		}, checkTool)
-
 		return server.Run(cmd.Context(), &mcp.StdioTransport{})
 	},
 }
@@ -113,7 +113,9 @@ type (
 		Configuration string `json:"configuration,omitempty" jsonschema:"Path to the goreleaser YAML configuration file. If empty will use the default."`
 	}
 	checkOutput struct {
-		Message string `json:"message"`
+		Message      string `json:"message"`
+		Filepath     string `json:"filepath"`
+		Instructions string `json:"instructions,omitempty"`
 	}
 )
 
@@ -144,11 +146,16 @@ func openConfig(name string) (string, []byte, error) {
 	return "", nil, fmt.Errorf("could not find any configuration file")
 }
 
-func checkTool(ctx context.Context, _ *mcp.CallToolRequest, args checkArgs) (*mcp.CallToolResult, checkOutput, error) {
+func checkTool(ctx context.Context, req *mcp.CallToolRequest, args checkArgs) (*mcp.CallToolResult, checkOutput, error) {
 	name, bts, err := openConfig(args.Configuration)
 	if err != nil {
 		return nil, checkOutput{}, fmt.Errorf("could not check configuration: %w", err)
 	}
+
+	_ = req.Session.Log(ctx, &mcp.LoggingMessageParams{
+		Data:  fmt.Sprintf("using configuration file at %s", name),
+		Level: mcp.LoggingLevel("info"),
+	})
 
 	var cfg config.Project
 	if err := yaml.UnmarshalStrict(bts, &cfg); err != nil {
@@ -158,16 +165,32 @@ func checkTool(ctx context.Context, _ *mcp.CallToolRequest, args checkArgs) (*mc
 	deprecations := findDeprecated(cfg)
 	if len(deprecations) == 0 {
 		return nil, checkOutput{
-			Message: fmt.Sprintf("Configuration at %q is valid!", name),
+			Message:  "Configuration is valid!",
+			Filepath: name,
 		}, nil
 	}
 
+	res, err := req.Session.Elicit(ctx, &mcp.ElicitParams{
+		Message:         "You have deprecated configuration options in your GoReleaser config. Do you want to fix it?",
+		RequestedSchema: nil,
+	})
+	if err != nil || res.Action == "decline" {
+		return nil, checkOutput{
+			Message:  "Configuration is valid, but uses deprecated options",
+			Filepath: name,
+		}, nil
+	}
+
+	// if action is 'cancel' let's just add the instructions anyway...
 	var sb strings.Builder
-	sb.WriteString("Configuration is valid, but uses the following deprecated properties:\n")
+	sb.WriteString("# Deprecated Options\n\n")
+	sb.WriteString("Here's the instructions to fix each of deprecation:\n\n")
 	for _, key := range slices.Collect(maps.Keys(deprecations)) {
 		sb.WriteString(fmt.Sprintf("## %s\n\nInstructions: %s\n\n", key, instructions[key]))
 	}
 	return nil, checkOutput{
-		Message: sb.String(),
+		Message:      "Configuration is valid, but uses deprecated options",
+		Instructions: sb.String(),
+		Filepath:     name,
 	}, nil
 }
