@@ -22,8 +22,7 @@ GoReleaser configurations.
 ## Installation
 
 ```bash
-go install github.com/goreleaser/goreleaser-mcp@latest
-npm -g @goreleaser/mcp
+# Soon!
 ```
 
 ## Usage
