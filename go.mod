@@ -5,7 +5,7 @@ go 1.25.3
 require (
 	github.com/caarlos0/go-version v0.2.2
 	github.com/charmbracelet/fang v0.4.3
-	github.com/goreleaser/goreleaser-pro/v2 v2.12.8-0.20251102203153-23deca4fbad5
+	github.com/goreleaser/goreleaser-pro/v2 v2.12.8-0.20251102214714-85c7ad3528b6
 	github.com/modelcontextprotocol/go-sdk v1.1.0
 	github.com/spf13/cobra v1.10.1
 	github.com/stretchr/testify v1.10.0
@@ -43,5 +43,3 @@ require (
 	golang.org/x/sys v0.36.0 // indirect
 	golang.org/x/text v0.24.0 // indirect
 )
-
-replace github.com/goreleaser/goreleaser-pro/v2 => ../goreleaser-pro
