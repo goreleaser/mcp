@@ -22,18 +22,27 @@ GoReleaser configurations.
 ## Installation
 
 ```bash
-# Soon!
+npm install -g @goreleaser/mcp
+brew install --cask goreleaser/tap/mcp
+winget install goreleaser.mcp
 ```
 
 ## Usage
 
-Run the MCP server:
+You can add something like this to your tooling:
 
-```bash
-goreleaser-mcp
+```json
+{
+  // ...
+  "mcp": {
+    "goreleaser": {
+      "command": "goreleaser-mcp",
+      "type": "stdio"
+    }
+  }
+  // ...
+}
 ```
-
-The server communicates over stdio and implements the Model Context Protocol.
 
 ## Badges
 
