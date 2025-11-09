@@ -4,3 +4,4 @@ coverage.out
 .task/
 # Added by goreleaser init:
 dist/
+.mcpregistry*
