@@ -88,13 +88,26 @@ dockers_v2:
       "org.opencontainers.image.description": "{{.Metadata.Description}}"
 
 homebrew_casks:
-  - repository:
+  - name: mcp
+    repository:
       owner: goreleaser
       name: homebrew-tap
-    alternative_names: ["{{ .ProjectName }}@{{.Major}}"]
-    license: MIT
     url:
       verified: github.com/goreleaser/mcp/releases/download
+
+winget:
+  - name: mcp
+    publisher: goreleaser
+    repository:
+      owner: goreleaser
+      name: winget-pkgs
+      branch: "mcp-{{.Version}}"
+      pull_request:
+        enabled: true
+        base:
+          owner: microsoft
+          name: winget-pkgs
+          branch: master
 
 aurs:
   - private_key: "{{ .Env.AUR_KEY }}"
