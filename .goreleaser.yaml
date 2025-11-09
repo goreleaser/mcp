@@ -79,6 +79,7 @@ dockers_v2:
       "org.opencontainers.image.revision": "{{.FullCommit}}"
       "org.opencontainers.image.version": "{{.Version}}"
       "org.opencontainers.image.source": "https://github.com/goreleaser/mcp"
+      "io.modelcontextprotocol.server.name": "io.github.goreleaser/mcp"
     annotations:
       "org.opencontainers.image.description": "{{.Metadata.Description}}"
 
@@ -92,7 +93,8 @@ homebrew_casks:
       verified: github.com/goreleaser/mcp/releases/download
 
 aurs:
-  - private_key: "{{ .Env.AUR_KEY }}"
+  - name: goreleaser-mcp-bin
+    private_key: "{{ .Env.AUR_KEY }}"
     git_url: "ssh://aur@aur.archlinux.org/goreleaser-mcp-bin.git"
     package: |-
       # bin
@@ -139,7 +141,6 @@ signs:
 docker_signs:
   - cmd: cosign
     artifacts: manifests
-    output: true
     args:
       - "sign"
       - "${artifact}@${digest}"
