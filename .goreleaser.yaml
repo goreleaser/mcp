@@ -232,6 +232,7 @@ furies:
 
 mcp:
   name: "io.github.goreleaser/mcp"
+  title: "The MCP server for GoReleaser"
   repository:
     source: "github"
     url: "https://github.com/goreleaser/mcp"
@@ -239,11 +240,11 @@ mcp:
     type: 'github{{- if isEnvSet "GITHUB_ACTIONS" }}-oidc{{ end -}}'
     token: "{{ .Env.GITHUB_TOKEN }}"
   packages:
-    - type: oci
+    - registry_type: oci
       identifier: "ghcr.io/goreleaser/mcp:{{ .Version }}"
       transport:
         type: stdio
-    - type: npm
+    - registry_type: npm
       identifier: "@goreleaser/mcp"
       transport:
         type: stdio
