@@ -128,13 +128,11 @@ notarize:
 
 signs:
   - cmd: cosign
-    certificate: "${artifact}.pem"
-    output: true
+    signature: "${artifact}.sigstore.json"
     artifacts: checksum
     args:
       - sign-blob
-      - "--output-certificate=${certificate}"
-      - "--output-signature=${signature}"
+      - "--bundle=${signature}"
       - "${artifact}"
       - --yes
 
