@@ -104,7 +104,7 @@ npms:
   - name: "@goreleaser/mcp"
     repository: https://github.com/goreleaser/mcp
     bugs: https://github.com/goreleaser/mcp/issues
-    extras:
+    extra:
       "mcpName": "io.github.goreleaser/mcp"
     keywords:
       - goreleaser
