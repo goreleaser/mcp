@@ -7,10 +7,9 @@
 # vim: set ts=2 sw=2 tw=0 fo=cnqoj
 
 version: 2
-
 pro: true
+project_name: goreleaser-mcp
 
-project_name: mcp
 metadata:
   mod_timestamp: "{{ .CommitTimestamp }}"
   description: GoReleaser MCP server
@@ -24,8 +23,7 @@ before:
     - go mod tidy
 
 builds:
-  - binary: goreleaser-mcp
-    env:
+  - env:
       - CGO_ENABLED=0
     goos:
       - linux
@@ -93,8 +91,7 @@ homebrew_casks:
       verified: github.com/goreleaser/mcp/releases/download
 
 aurs:
-  - name: goreleaser-mcp-bin
-    private_key: "{{ .Env.AUR_KEY }}"
+  - private_key: "{{ .Env.AUR_KEY }}"
     git_url: "ssh://aur@aur.archlinux.org/goreleaser-mcp-bin.git"
     package: |-
       # bin
@@ -107,6 +104,8 @@ npms:
   - name: "@goreleaser/mcp"
     repository: https://github.com/goreleaser/mcp
     bugs: https://github.com/goreleaser/mcp/issues
+    extras:
+      "mcpName": "io.github.goreleaser/mcp"
     keywords:
       - goreleaser
       - mcp
