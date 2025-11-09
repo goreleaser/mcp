@@ -229,3 +229,21 @@ release:
 furies:
   - account: goreleaser
     disable: "{{ .IsNightly }}"
+
+mcp:
+  name: "io.github.goreleaser/mcp"
+  repository:
+    source: "github"
+    url: "https://github.com/goreleaser/mcp"
+  auth:
+    type: 'github{{- if isEnvSet "GITHUB_ACTIONS" }}-oidc{{ end -}}'
+    token: "{{ .Env.GITHUB_TOKEN }}"
+  packages:
+    - type: oci
+      identifier: "ghcr.io/goreleaser/mcp:{{ .Version }}"
+      transport:
+        type: stdio
+    - type: npm
+      identifier: "@goreleaser/mcp"
+      transport:
+        type: stdio
