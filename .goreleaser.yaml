@@ -18,6 +18,12 @@ metadata:
   maintainers:
     - Carlos Alexandro Becker <carlos@becker.software>
 
+checksum:
+  name_template: "checksums.txt"
+
+docker_digest:
+  name_template: "digest.txt"
+
 before:
   hooks:
     - go mod tidy
