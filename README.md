@@ -37,9 +37,9 @@ The server communicates over stdio and implements the Model Context Protocol.
 
 ## Badges
 
-[![Release](https://img.shields.io/github/release/goreleaser/goreleaser-mcp.svg?style=for-the-badge)](https://github.com/goreleaser/goreleaser-mcp/releases/latest)
+[![Release](https://img.shields.io/github/release/goreleaser/mcp.svg?style=for-the-badge)](https://github.com/goreleaser/mcp/releases/latest)
 [![Software License](https://img.shields.io/badge/license-MIT-brightgreen.svg?style=for-the-badge)](/LICENSE.md)
-[![Build status](https://img.shields.io/github/actions/workflow/status/goreleaser/goreleaser-mcp/build.yml?style=for-the-badge&branch=main)](https://github.com/goreleaser/goreleaser-mcp/actions?workflow=build)
-[![Go Doc](https://img.shields.io/badge/godoc-reference-blue.svg?style=for-the-badge)](http://godoc.org/github.com/goreleaser/goreleaser-mcp)
+[![Build status](https://img.shields.io/github/actions/workflow/status/goreleaser/mcp/build.yml?style=for-the-badge&branch=main)](https://github.com/goreleaser/mcp/actions?workflow=build)
+[![Go Doc](https://img.shields.io/badge/godoc-reference-blue.svg?style=for-the-badge)](http://godoc.org/github.com/goreleaser/mcp)
 [![Powered By: GoReleaser](https://img.shields.io/badge/powered%20by-goreleaser-green.svg?style=for-the-badge)](https://github.com/goreleaser)
-[![GoReportCard](https://goreportcard.com/badge/github.com/goreleaser/goreleaser-mcp?style=for-the-badge)](https://goreportcard.com/report/github.com/goreleaser/goreleaser-mcp)
+[![GoReportCard](https://goreportcard.com/badge/github.com/goreleaser/mcp?style=for-the-badge)](https://goreportcard.com/report/github.com/goreleaser/mcp)
