@@ -104,6 +104,7 @@ winget:
       branch: "mcp-{{.Version}}"
       pull_request:
         enabled: true
+        check_boxes: true
         base:
           owner: microsoft
           name: winget-pkgs
