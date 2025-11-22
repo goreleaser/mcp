@@ -2,6 +2,8 @@
 
 <!-- md:version v2.13-unreleased -->
 
+<!-- md:experimental https://github.com/orgs/goreleaser/discussions/6251 -->
+
 After building your binaries, GoReleaser can generate and publish a Model
 Context Protocol (MCP) server manifest file (`server.json`).
 This manifest makes your tool discoverable and installable by MCP clients,
@@ -153,14 +155,14 @@ If you are using the `oci` transport type, make sure to add the required
 label to the image as well:
 
 ```yaml
-# New Docker:
+# Docker v2 (new):
 dockers_v2:
   - images:
       - ghcr.io/etc/etc
     labels:
       io.modelcontextprotocol.server.name: "io.github.username/server-name"
 
-# Old:
+# Docker (old):
 dockers:
   - image_templates:
       - ghcr.io/etc/etc:{{ .Version }}
@@ -173,7 +175,7 @@ If you're using NPM, you can use the `extra` field to set the `mcpName`:
 ```yaml
 npms:
   - name: "@foo/bar"
-    extras:
+    extra:
       mcpName: io.github.foo/bar
 ```
 
