@@ -170,15 +170,17 @@ func checkTool(ctx context.Context, req *mcp.CallToolRequest, args checkArgs) (*
 		}, nil
 	}
 
-	res, err := req.Session.Elicit(ctx, &mcp.ElicitParams{
-		Message:         "You have deprecated configuration options in your GoReleaser config. Do you want to fix it?",
-		RequestedSchema: nil,
-	})
-	if err != nil || res.Action == "decline" {
-		return nil, checkOutput{
-			Message:  "Configuration is valid, but uses deprecated options",
-			Filepath: name,
-		}, nil
+	if req.Session.InitializeParams().Capabilities.Elicitation != nil {
+		res, err := req.Session.Elicit(ctx, &mcp.ElicitParams{
+			Message:         "You have deprecated configuration options in your GoReleaser config. Do you want to fix it?",
+			RequestedSchema: nil,
+		})
+		if err != nil || res.Action == "decline" {
+			return nil, checkOutput{
+				Message:  "Configuration is valid, but uses deprecated options",
+				Filepath: name,
+			}, nil
+		}
 	}
 
 	// if action is 'cancel' let's just add the instructions anyway...
