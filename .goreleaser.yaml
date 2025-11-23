@@ -89,6 +89,8 @@ dockers_v2:
 
 homebrew_casks:
   - name: mcp
+    binaries:
+      - goreleaser-mcp
     repository:
       owner: goreleaser
       name: homebrew-tap
