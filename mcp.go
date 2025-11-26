@@ -19,6 +19,9 @@ import (
 //go:embed prompts/update.md
 var updatePrompt string
 
+//go:embed prompts/update-cosign.md
+var updateCosignPrompt string
+
 //go:embed docs
 var docs embed.FS
 
@@ -37,12 +40,26 @@ var cmd = &cobra.Command{
 
 		server.AddPrompt(&mcp.Prompt{
 			Name:  "update_config",
-			Title: "Updates your GoReleaser configuration, getting rid of deprecations",
+			Title: "Fixes deprecated options in your GoReleaser configuration",
 		}, func(context.Context, *mcp.GetPromptRequest) (*mcp.GetPromptResult, error) {
 			return &mcp.GetPromptResult{
 				Messages: []*mcp.PromptMessage{
 					{
 						Content: &mcp.TextContent{Text: updatePrompt},
+						Role:    mcp.Role("user"),
+					},
+				},
+			}, nil
+		})
+
+		server.AddPrompt(&mcp.Prompt{
+			Name:  "update_cosign_config",
+			Title: "Updates your configuration to cosign v3",
+		}, func(context.Context, *mcp.GetPromptRequest) (*mcp.GetPromptResult, error) {
+			return &mcp.GetPromptResult{
+				Messages: []*mcp.PromptMessage{
+					{
+						Content: &mcp.TextContent{Text: updateCosignPrompt},
 						Role:    mcp.Role("user"),
 					},
 				},
