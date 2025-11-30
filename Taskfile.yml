@@ -14,7 +14,7 @@ tasks:
   update:
     desc: update goreleaser-pro
     cmds:
-      - go get github.com/goreleaser/goreleaser-pro@latest
+      - go get github.com/goreleaser/goreleaser-pro/v2@latest
       - go mod tidy
   sync:
     desc: Sync docs
