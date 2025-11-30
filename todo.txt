@@ -1,5 +1,0 @@
-- setup docker in release workflow
-- setup npm in release workflow
-- setup goreleaser-pro in release workflow
-- clean up docs? how to do it consistently? is it needed?
-- is the docs:// resources actually useful? how the client handle them?
