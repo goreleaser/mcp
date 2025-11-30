@@ -26,3 +26,19 @@ tasks:
       - mkdir -p docs
       - cp -rf ../goreleaser/www/docs/customization ./docs/
       - cp -rf ../goreleaser/www/docs/deprecations.md ./docs/
+  release:
+    desc: Create a new tag
+    vars:
+      NEXT:
+        sh: svu n --always
+    prompt: "This will release {{.NEXT}}. Continue?"
+    preconditions:
+      - sh: '[ $(git symbolic-ref --short HEAD) = "main" ]'
+        msg: Not on main branch
+      - sh: "[ $(git status --porcelain=2 | wc -l) = 0 ]"
+        msg: "Git is dirty"
+    cmds:
+      - "git tag -d nightly || true"
+      - git tag {{.NEXT}}
+      - echo {{.NEXT}}
+      - git push origin --tags
