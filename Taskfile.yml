@@ -7,8 +7,17 @@ env:
   GOPROXY: https://proxy.golang.org,direct
 
 tasks:
+  default:
+    cmds:
+      - task: update
+      - task: sync
+  update:
+    desc: update goreleaser-pro
+    cmds:
+      - go get github.com/goreleaser/goreleaser-pro@latest
+      - go mod tidy
   sync:
-    desc: Sync config
+    desc: Sync docs
     sources:
       - ../goreleaser/www/docs/
     generates:
