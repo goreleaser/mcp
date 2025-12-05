@@ -123,6 +123,7 @@ var instructions = map[string]string{
 	"nightly.name_template":            "rename `name_template` to `version_template`",
 	"snaps.builds":                     "rename `builds` to `ids`",
 	"snapshot.name_template":           "rename `name_template` to `version_template`",
+	"mcp.github":                       "move all the properties from `github` to the root `mcp` field",
 }
 
 type (
