@@ -3,6 +3,8 @@
 This page is used to list deprecation notices across GoReleaser.
 
 Deprecated options are only removed on major versions of GoReleaser.
+Deprecated versions on features deemed experimental (you see a warning when
+using them) might be removed in feature releases.
 
 Nevertheless, it's a good thing to keep your configuration up-to-date to prevent
 any issues.
@@ -40,6 +42,35 @@ PS: Don't forget to add it to cmd/mcp.go as well!
     ```
 
 -->
+
+### mcp.github
+
+> since v2.13.1
+
+The MCP configuration was initially nested under `github`, but the registry is
+actually run by the MCP committee, not GitHub specifically.
+The configuration should now be at the top level of `mcp`.
+
+=== "Before"
+
+    ```yaml
+    mcp:
+      github:
+        name: io.github.user/myserver
+        title: "My MCP Server"
+        description: "MCP server for my project"
+        # ...
+    ```
+
+=== "After"
+
+    ```yaml
+    mcp:
+      name: io.github.user/myserver
+      title: "My MCP Server"
+      description: "MCP server for my project"
+      # ...
+    ```
 
 ### homebrew_casks.binary
 
@@ -309,28 +340,23 @@ You may also want to make the _Cask_ conflict with the previous _Formula_.
     Don't forget to remove the `directory: Formula` from your configuration.
     Casks **need** to be in the `Casks` directory - which is the default.
 
-I would also recommend manually editing your Formula to disable it, e.g.:
+The preferred way to migrate is to create a `tap_migrations.json` file in the
+root of your tap:
 
-```ruby
-class Foo < Formula
-  # ...
-  # make sure to bump the version:
-  version "1.2.3"
-  # ...
-  disable! date: "2025-06-10", because: "the cask should be used now instead", replacement_cask: "foo"
-  # ...
-end
+```json
+{
+  "foo": "foo"
+}
 ```
 
-With this, when the user tries to upgrade, they should see and error like so:
+And then delete the Formula:
 
+```sh
+rm Formula/foo.rb
 ```
-==> Upgrading 1 outdated package:
-goreleaser/tap/goreleaser 2.9.0 -> 2.9.1
-Error: goreleaser/tap/goreleaser has been disabled because it the cask should be used now instead! It will be disabled on 2025-06-14.
-Replacement:
-  brew install --cask goreleaser
-```
+
+With this, when the user tries to upgrade, it should automatically update to the
+Cask instead.
 
 ### archives.builds
 

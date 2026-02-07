@@ -52,9 +52,16 @@ winget:
 
     # Package identifier.
     #
-    # Default: Publisher.ProjectName.
+    # Default: the project name.
     # Templates: allowed.
     package_identifier: myproject.myproject
+
+    # Package name.
+    #
+    # Default: name.
+    # <!-- md:inline_version v2.14-unreleased -->.
+    # Templates: allowed.
+    packaget_name: "Foo Bar"
 
     # IDs of the archives to use.
     # Empty means all IDs.
@@ -67,6 +74,7 @@ winget:
     # Valid options are:
     # - '':        archives or binaries
     # - 'msi':     msi installers (requires the MSI pipe configured, Pro only)
+    # - 'nsis':    nsis installers (requires the NSIS pipe configured, Pro only)
     # - 'archive': archives (only if format is zip),
     # - 'binary':  binaries (requires an archive configuration with format set to 'binary' as well)
     #
