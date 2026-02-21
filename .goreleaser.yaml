@@ -229,7 +229,7 @@ release:
     <a href="https://goreleaser.com"><img src="https://raw.githubusercontent.com/goreleaser/artwork/master/opencollective-header.png" with="100%" alt="GoReleaser logo"></a>
     {{ end }}
 
-furies:
+gemfury:
   - account: goreleaser
     disable: "{{ .IsNightly }}"
 
