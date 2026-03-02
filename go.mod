@@ -5,8 +5,8 @@ go 1.25.3
 require (
 	github.com/caarlos0/go-version v0.2.2
 	github.com/charmbracelet/fang v0.4.4
-	github.com/goreleaser/goreleaser-pro/v2 v2.14.0
-	github.com/modelcontextprotocol/go-sdk v1.3.1
+	github.com/goreleaser/goreleaser-pro/v2 v2.14.1
+	github.com/modelcontextprotocol/go-sdk v1.4.0
 	github.com/spf13/cobra v1.10.2
 	github.com/stretchr/testify v1.11.1
 	gopkg.in/yaml.v3 v3.0.1
@@ -42,8 +42,8 @@ require (
 	github.com/xo/terminfo v0.0.0-20220910002029-abceb7e1c41e // indirect
 	github.com/yosida95/uritemplate/v3 v3.0.2 // indirect
 	golang.org/x/exp v0.0.0-20231206192017-f3f8817b8deb // indirect
-	golang.org/x/oauth2 v0.30.0 // indirect
+	golang.org/x/oauth2 v0.34.0 // indirect
 	golang.org/x/sync v0.17.0 // indirect
-	golang.org/x/sys v0.37.0 // indirect
+	golang.org/x/sys v0.40.0 // indirect
 	golang.org/x/text v0.24.0 // indirect
 )
