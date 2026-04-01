@@ -23,10 +23,11 @@ tasks:
     generates:
       - ./pkg/config/
     cmds:
+      - rm -rf docs
       - mkdir -p docs
-      - cp -rf ../goreleaser/www/content/customization ./docs/
-      - cp -rf ../goreleaser/www/content/resources/deprecations.md ./docs/
-      - find ./docs/ -name '_index.md' -delete
+      - sh -c 'cd ../goreleaser/www; hugo'
+      - rsync -a --include='*/' --exclude='index.md' --include='*.md' --exclude='*' --prune-empty-dirs ../goreleaser/www/public/customization/ ./docs/
+      - cp ../goreleaser/www/public/resources/deprecations.md ./docs/
   release:
     desc: Create a new tag
     vars:
