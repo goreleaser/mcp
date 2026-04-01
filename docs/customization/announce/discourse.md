@@ -1,6 +1,9 @@
-# Discourse
+---
+title: "Discourse"
+weight: 30
+---
 
-<!-- md:version v2.13 -->
+{{< version "v2.13" >}}
 
 This announcer enables posting new release messages to a
 [Discourse](https://discourse.org/) forum.
@@ -25,7 +28,7 @@ with the API key as the value:
 After this, you can add following section to your `.goreleaser.yaml`
 configuration:
 
-```yaml title=".goreleaser.yaml"
+```yaml {filename=".goreleaser.yaml"}
 announce:
   discourse:
     # Whether this announcer is enabled or not.
@@ -62,7 +65,7 @@ announce:
     category_id: 4
 ```
 
-<!-- md:templates -->
+{{< templates >}}
 
 ## Troubleshooting
 

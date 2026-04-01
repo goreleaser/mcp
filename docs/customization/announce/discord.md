@@ -1,4 +1,7 @@
-# Discord
+---
+title: "Discord"
+weight: 20
+---
 
 To use [Discord](https://discord.com/), you need
 to [create a Webhook](https://support.discord.com/hc/en-us/articles/228383668-Intro-to-Webhooks), and set following
@@ -9,12 +12,12 @@ environment variables on your pipeline:
 
 After this, you can add following section to your `.goreleaser.yaml` config:
 
-```yaml title=".goreleaser.yaml"
+```yaml {filename=".goreleaser.yaml"}
 announce:
   discord:
     # Whether its enabled or not.
     #
-    # Templates: allowed (since v2.6).
+    # Templates: allowed. {{< inline_version "v2.6" >}}
     enabled: true
 
     # Message template to use while publishing.
@@ -39,4 +42,4 @@ announce:
     icon_url: ""
 ```
 
-<!-- md:templates -->
+{{< templates >}}

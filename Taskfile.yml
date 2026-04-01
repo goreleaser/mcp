@@ -24,8 +24,9 @@ tasks:
       - ./pkg/config/
     cmds:
       - mkdir -p docs
-      - cp -rf ../goreleaser/www/docs/customization ./docs/
-      - cp -rf ../goreleaser/www/docs/deprecations.md ./docs/
+      - cp -rf ../goreleaser/www/content/customization ./docs/
+      - cp -rf ../goreleaser/www/content/resources/deprecations.md ./docs/
+      - find ./docs/ -name '_index.md' -delete
   release:
     desc: Create a new tag
     vars:

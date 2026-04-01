@@ -1,4 +1,7 @@
-# Deprecation notices
+---
+title: "Deprecation notices"
+weight: 30
+---
 
 This page is used to list deprecation notices across GoReleaser.
 
@@ -29,19 +32,112 @@ Description.
 
 PS: Don't forget to add it to cmd/mcp.go as well!
 
-=== "Before"
+{{< tabs >}}
+{{< tab "Before" >}}
 
-    ```yaml
-    foo: bar
-    ```
+```yaml
+foo: bar
+```
+{{< /tab >}}
+{{< tab "After" >}}
 
-=== "After"
-
-    ```yaml
-    foo: bar
-    ```
+```yaml
+foo: bar
+```
+{{< /tab >}}
+{{< /tabs >}}
 
 -->
+
+### dockers_v2.retry
+
+> since v2.15.3
+
+All retry configuration were moved to the root of the configuration file:
+
+{{< tabs >}}
+{{< tab "Before" >}}
+
+```yaml
+dockers_v2:
+  - retry:
+      attempts: 3
+      delay: 5s
+      max_delay: 1m
+```
+
+{{< /tab >}}
+{{< tab "After" >}}
+
+```yaml
+retry:
+  attempts: 3
+  delay: 5s
+  max_delay: 1m
+```
+
+{{< /tab >}}
+{{< /tabs >}}
+
+### docker_manifests.retry
+
+> since v2.15.3
+
+All retry configuration were moved to the root of the configuration file:
+
+{{< tabs >}}
+{{< tab "Before" >}}
+
+```yaml
+docker_manifests:
+  - retry:
+      attempts: 3
+      delay: 5s
+      max_delay: 1m
+```
+
+{{< /tab >}}
+{{< tab "After" >}}
+
+```yaml
+retry:
+  attempts: 3
+  delay: 5s
+  max_delay: 1m
+```
+
+{{< /tab >}}
+{{< /tabs >}}
+
+### dockers.retry
+
+> since v2.15.3
+
+All retry configuration were moved to the root of the configuration file:
+
+{{< tabs >}}
+{{< tab "Before" >}}
+
+```yaml
+dockers:
+  - retry:
+      attempts: 3
+      delay: 5s
+      max_delay: 1m
+```
+
+{{< /tab >}}
+{{< tab "After" >}}
+
+```yaml
+retry:
+  attempts: 3
+  delay: 5s
+  max_delay: 1m
+```
+
+{{< /tab >}}
+{{< /tabs >}}
 
 ### furies
 
@@ -49,19 +145,24 @@ PS: Don't forget to add it to cmd/mcp.go as well!
 
 `furies` was renamed to `gemfury` for clarity.
 
-=== "Before"
+{{< tabs >}}
+{{< tab "Before" >}}
 
-    ```yaml
-    furies:
-      - account: myaccount
-    ```
+```yaml
+furies:
+  - account: myaccount
+```
 
-=== "After"
+{{< /tab >}}
+{{< tab "After" >}}
 
-    ```yaml
-    gemfury:
-      - account: myaccount
-    ```
+```yaml
+gemfury:
+  - account: myaccount
+```
+
+{{< /tab >}}
+{{< /tabs >}}
 
 ### mcp.github
 
@@ -71,26 +172,31 @@ The MCP configuration was initially nested under `github`, but the registry is
 actually run by the MCP committee, not GitHub specifically.
 The configuration should now be at the top level of `mcp`.
 
-=== "Before"
+{{< tabs >}}
+{{< tab "Before" >}}
 
-    ```yaml
-    mcp:
-      github:
-        name: io.github.user/myserver
-        title: "My MCP Server"
-        description: "MCP server for my project"
-        # ...
-    ```
+```yaml
+mcp:
+  github:
+    name: io.github.user/myserver
+    title: "My MCP Server"
+    description: "MCP server for my project"
+    # ...
+```
 
-=== "After"
+{{< /tab >}}
+{{< tab "After" >}}
 
-    ```yaml
-    mcp:
-      name: io.github.user/myserver
-      title: "My MCP Server"
-      description: "MCP server for my project"
-      # ...
-    ```
+```yaml
+mcp:
+  name: io.github.user/myserver
+  title: "My MCP Server"
+  description: "MCP server for my project"
+  # ...
+```
+
+{{< /tab >}}
+{{< /tabs >}}
 
 ### homebrew_casks.binary
 
@@ -98,19 +204,24 @@ The configuration should now be at the top level of `mcp`.
 
 It should now be in plural form.
 
-=== "Before"
+{{< tabs >}}
+{{< tab "Before" >}}
 
-    ```yaml
-    homebrew_casks:
-    - binary: foo
-    ```
+```yaml
+homebrew_casks:
+  - binary: foo
+```
 
-=== "After"
+{{< /tab >}}
+{{< tab "After" >}}
 
-    ```yaml
-    homebrew_casks:
-    - binaries: [ foo ]
-    ```
+```yaml
+homebrew_casks:
+  - binaries: [foo]
+```
+
+{{< /tab >}}
+{{< /tabs >}}
 
 ### dockers
 
@@ -127,86 +238,91 @@ Then, instead of building the images, pushing them, and then building the
 manifests and pushing them, we will now run a single `docker buildx build` with
 the given platforms, which will build and publish the manifest and SBOM.
 
-=== "Before"
+{{< tabs >}}
+{{< tab "Before" >}}
 
-    ```yaml
-    dockers:
-      - image_templates:
-          - "foo/bar:v{{ .Version }}-amd64"
-          - "ghcr.io/foo/bar:v{{ .Version }}-amd64"
-        dockerfile: Dockerfile
-        use: buildx
-        build_flag_templates:
-          - "--pull"
-          - "--label=org.opencontainers.image.description=Foo bar"
-          - "--label=org.opencontainers.image.created={{.Date}}"
-          - "--label=org.opencontainers.image.name={{.ProjectName}}"
-          - "--label=org.opencontainers.image.revision={{.FullCommit}}"
-          - "--label=org.opencontainers.image.version={{.Version}}"
-          - "--label=org.opencontainers.image.source={{.GitURL}}"
-          - "--platform=linux/amd64"
-      - image_templates:
-          - "foo/bar:v{{ .Version }}-arm64"
-          - "ghcr.io/foo/bar:v{{ .Version }}-arm64"
-        dockerfile: Dockerfile
-        use: buildx
-        build_flag_templates:
-          - "--pull"
-          - "--label=org.opencontainers.image.description=Foo bar"
-          - "--label=org.opencontainers.image.created={{.Date}}"
-          - "--label=org.opencontainers.image.name={{.ProjectName}}"
-          - "--label=org.opencontainers.image.revision={{.FullCommit}}"
-          - "--label=org.opencontainers.image.version={{.Version}}"
-          - "--label=org.opencontainers.image.source={{.GitURL}}"
-          - "--platform=linux/arm64"
-        goarch: arm64
+```yaml
+dockers:
+  - image_templates:
+      - "foo/bar:v{{ .Version }}-amd64"
+      - "ghcr.io/foo/bar:v{{ .Version }}-amd64"
+    dockerfile: Dockerfile
+    use: buildx
+    build_flag_templates:
+      - "--pull"
+      - "--label=org.opencontainers.image.description=Foo bar"
+      - "--label=org.opencontainers.image.created={{.Date}}"
+      - "--label=org.opencontainers.image.name={{.ProjectName}}"
+      - "--label=org.opencontainers.image.revision={{.FullCommit}}"
+      - "--label=org.opencontainers.image.version={{.Version}}"
+      - "--label=org.opencontainers.image.source={{.GitURL}}"
+      - "--platform=linux/amd64"
+  - image_templates:
+      - "foo/bar:v{{ .Version }}-arm64"
+      - "ghcr.io/foo/bar:v{{ .Version }}-arm64"
+    dockerfile: Dockerfile
+    use: buildx
+    build_flag_templates:
+      - "--pull"
+      - "--label=org.opencontainers.image.description=Foo bar"
+      - "--label=org.opencontainers.image.created={{.Date}}"
+      - "--label=org.opencontainers.image.name={{.ProjectName}}"
+      - "--label=org.opencontainers.image.revision={{.FullCommit}}"
+      - "--label=org.opencontainers.image.version={{.Version}}"
+      - "--label=org.opencontainers.image.source={{.GitURL}}"
+      - "--platform=linux/arm64"
+    goarch: arm64
 
-    docker_manifests:
-      - name_template: "foo/bar:v{{ .Version }}"
-        image_templates:
-          - "foo/bar:v{{ .Version }}-amd64"
-          - "foo/bar:v{{ .Version }}-arm64"
-      - name_template: "ghcr.io/foo/bar:v{{ .Version }}"
-        image_templates:
-          - "ghcr.io/foo/bar:v{{ .Version }}-amd64"
-          - "ghcr.io/foo/bar:v{{ .Version }}-arm64"
-      - name_template: "{{ if not .IsNightly }}foo/bar:latest{{ end }}"
-        image_templates:
-          - "foo/bar:v{{ .Version }}-amd64"
-          - "foo/bar:v{{ .Version }}-arm64"
-      - name_template: "{{ if not .IsNightly }}ghcr.io/foo/bar:latest{{ end }}"
-        image_templates:
-          - "ghcr.io/foo/bar:v{{ .Version }}-amd64"
-          - "ghcr.io/foo/bar:v{{ .Version }}-arm64"
-      - name_template: "{{ if .IsNightly }}foo/bar:nightly{{ end }}"
-        image_templates:
-          - "foo/bar:v{{ .Version }}-amd64"
-          - "foo/bar:v{{ .Version }}-arm64"
-      - name_template: "{{ if .IsNightly }}ghcr.io/foo/bar:nightly{{ end }}"
-        image_templates:
-          - "ghcr.io/foo/bar:v{{ .Version }}-amd64"
-          - "ghcr.io/foo/bar:v{{ .Version }}-arm64"
-    ```
+docker_manifests:
+  - name_template: "foo/bar:v{{ .Version }}"
+    image_templates:
+      - "foo/bar:v{{ .Version }}-amd64"
+      - "foo/bar:v{{ .Version }}-arm64"
+  - name_template: "ghcr.io/foo/bar:v{{ .Version }}"
+    image_templates:
+      - "ghcr.io/foo/bar:v{{ .Version }}-amd64"
+      - "ghcr.io/foo/bar:v{{ .Version }}-arm64"
+  - name_template: "{{ if not .IsNightly }}foo/bar:latest{{ end }}"
+    image_templates:
+      - "foo/bar:v{{ .Version }}-amd64"
+      - "foo/bar:v{{ .Version }}-arm64"
+  - name_template: "{{ if not .IsNightly }}ghcr.io/foo/bar:latest{{ end }}"
+    image_templates:
+      - "ghcr.io/foo/bar:v{{ .Version }}-amd64"
+      - "ghcr.io/foo/bar:v{{ .Version }}-arm64"
+  - name_template: "{{ if .IsNightly }}foo/bar:nightly{{ end }}"
+    image_templates:
+      - "foo/bar:v{{ .Version }}-amd64"
+      - "foo/bar:v{{ .Version }}-arm64"
+  - name_template: "{{ if .IsNightly }}ghcr.io/foo/bar:nightly{{ end }}"
+    image_templates:
+      - "ghcr.io/foo/bar:v{{ .Version }}-amd64"
+      - "ghcr.io/foo/bar:v{{ .Version }}-arm64"
+```
 
-=== "After"
+{{< /tab >}}
+{{< tab "After" >}}
 
-    ```yaml
-    dockers_v2:
-      - images:
-          - "foo/bar"
-          - "ghcr.io/foo/bar"
-        tags:
-          - "v{{ .Version }}"
-          - "{{ if .IsNightly }}nightly{{ end }}"
-          - "{{ if not .IsNightly }}latest{{ end }}"
-        labels:
-          "org.opencontainers.image.description": "Foo bar"
-          "org.opencontainers.image.created": "{{.Date}}"
-          "org.opencontainers.image.name": "{{.ProjectName}}"
-          "org.opencontainers.image.revision": "{{.FullCommit}}"
-          "org.opencontainers.image.version": "{{.Version}}"
-          "org.opencontainers.image.source": "{{.GitURL}}"
-    ```
+```yaml
+dockers_v2:
+  - images:
+      - "foo/bar"
+      - "ghcr.io/foo/bar"
+    tags:
+      - "v{{ .Version }}"
+      - "{{ if .IsNightly }}nightly{{ end }}"
+      - "{{ if not .IsNightly }}latest{{ end }}"
+    labels:
+      "org.opencontainers.image.description": "Foo bar"
+      "org.opencontainers.image.created": "{{.Date}}"
+      "org.opencontainers.image.name": "{{.ProjectName}}"
+      "org.opencontainers.image.revision": "{{.FullCommit}}"
+      "org.opencontainers.image.version": "{{.Version}}"
+      "org.opencontainers.image.source": "{{.GitURL}}"
+```
+
+{{< /tab >}}
+{{< /tabs >}}
 
 As you can see, it's a lot simpler.
 The resulting images are the same, a combination of all the non-empty images
@@ -215,20 +331,25 @@ with all the non-empty tags.
 This will also require a small change in your `Dockerfile` when copying from the
 context:
 
-=== "Before"
+{{< tabs >}}
+{{< tab "Before" >}}
 
-    ```dockerfile
-    FROM alpine
-    COPY my-binary /usr/bin
-    ```
+```dockerfile
+FROM alpine
+COPY my-binary /usr/bin
+```
 
-=== "After"
+{{< /tab >}}
+{{< tab "After" >}}
 
-    ```dockerfile
-    FROM alpine
-    ARG TARGETPLATFORM
-    COPY $TARGETPLATFORM/my-binary /usr/bin
-    ```
+```dockerfile
+FROM alpine
+ARG TARGETPLATFORM
+COPY $TARGETPLATFORM/my-binary /usr/bin
+```
+
+{{< /tab >}}
+{{< /tabs >}}
 
 GoReleaser will automatically setup the context in such a way that all the
 artifacts for the given target platform will be located within
@@ -244,20 +365,25 @@ Feel free to suggest improvements
 Regarding signing, you may also remove the `artifacts` option from you
 `docker_signs`:
 
-=== "Before"
+{{< tabs >}}
+{{< tab "Before" >}}
 
-    ```yaml
-    docker_signs:
-      - artifacts: images
-        # etc..
-    ```
+```yaml
+docker_signs:
+  - artifacts: images
+    # etc..
+```
 
-=== "After"
+{{< /tab >}}
+{{< tab "After" >}}
 
-    ```yaml
-    docker_signs:
-      - # etc..
-    ```
+```yaml
+docker_signs:
+  -  # etc..
+```
+
+{{< /tab >}}
+{{< /tabs >}}
 
 Since in the future we'll only have the docker image type, the `artifacts`
 property will eventually be deprecated and removed.
@@ -269,20 +395,25 @@ property will eventually be deprecated and removed.
 It was a no-op before, and is now
 [removed from Homebrew](https://github.com/Homebrew/brew/pull/20499).
 
-=== "Before"
+{{< tabs >}}
+{{< tab "Before" >}}
 
-    ```yaml
-    homebrew_casks:
-    - conflicts:
+```yaml
+homebrew_casks:
+  - conflicts:
       - formula: foo
-    ```
+```
 
-=== "After"
+{{< /tab >}}
+{{< tab "After" >}}
 
-    ```yaml
-    homebrew_casks:
-    - {}
-    ```
+```yaml
+homebrew_casks:
+  - {}
+```
+
+{{< /tab >}}
+{{< /tabs >}}
 
 ### homebrew_casks.manpage
 
@@ -290,20 +421,25 @@ It was a no-op before, and is now
 
 You may now define multiple man pages, which was not possible in v2.10.
 
-=== "Before"
+{{< tabs >}}
+{{< tab "Before" >}}
 
-    ```yaml
-    homebrew_casks:
-    - manpage: foo.1.gz
-    ```
+```yaml
+homebrew_casks:
+  - manpage: foo.1.gz
+```
 
-=== "After"
+{{< /tab >}}
+{{< tab "After" >}}
 
-    ```yaml
-    homebrew_casks:
-    - manpages:
+```yaml
+homebrew_casks:
+  - manpages:
       - foo.1.gz
-    ```
+```
+
+{{< /tab >}}
+{{< /tabs >}}
 
 ### brews
 
@@ -318,47 +454,51 @@ That said, we now have a `homebrew_casks` section!
 
 For simple cases, simply replacing one with the other will be good enough.
 More complex settings might require further change.
-Check the [new documentation](./customization/homebrew_casks.md) for more
+Check the [new documentation](/customization/publish/homebrew_casks/) for more
 details.
 
 Once you do the first release this way, you might also want to delete the old
 _Formulas_ from your _Tap_.
 You may also want to make the _Cask_ conflict with the previous _Formula_.
 
-=== "Before"
+{{< tabs >}}
+{{< tab "Before" >}}
 
-    ```yaml
-    brews:
-    - name: foo
-      directory: Formulas
-    ```
+```yaml
+brews:
+  - name: foo
+    directory: Formulas
+```
 
-=== "After"
+{{< /tab >}}
+{{< tab "After" >}}
 
-    ```yaml
-    homebrew_casks:
-    - name: foo
-      # Optional: either set it to Casks, or remove it:
-      directory: Casks
+```yaml
+homebrew_casks:
+  - name: foo
+    # Optional: either set it to Casks, or remove it:
+    directory: Casks
 
-      # Optional: helps pass `homebrew audit` if homepage is different from download domain:
-      url:
-        verified: github.com/myorg/myrepo
+    # Optional: helps pass `homebrew audit` if homepage is different from download domain:
+    url:
+      verified: github.com/myorg/myrepo
 
-      # Optional: if your app/binary isn't signed and notarized, you'll need this:
-      hooks:
-        post:
-          # replace foo with the actual binary name
-          install: |
-            if OS.mac?
-              system_command "/usr/bin/xattr", args: ["-dr", "com.apple.quarantine", "#{staged_path}/foo"]
-            end
-    ```
+    # Optional: if your app/binary isn't signed and notarized, you'll need this:
+    hooks:
+      post:
+        # replace foo with the actual binary name
+        install: |
+          if OS.mac?
+            system_command "/usr/bin/xattr", args: ["-dr", "com.apple.quarantine", "#{staged_path}/foo"]
+          end
+```
 
-!!! warning
+{{< /tab >}}
+{{< /tabs >}}
 
-    Don't forget to remove the `directory: Formula` from your configuration.
-    Casks **need** to be in the `Casks` directory - which is the default.
+> [!WARNING]
+> Don't forget to remove the `directory: Formula` from your configuration.
+> Casks **need** to be in the `Casks` directory - which is the default.
 
 The preferred way to migrate is to create a `tap_migrations.json` file in the
 root of your tap:
@@ -385,19 +525,24 @@ Cask instead.
 The `builds` field has been replaced with the `ids`, which is the nomenclature
 used everywhere else.
 
-=== "Before"
+{{< tabs >}}
+{{< tab "Before" >}}
 
-    ```yaml
-    archives:
-      builds: [a, b]
-    ```
+```yaml
+archives:
+  builds: [a, b]
+```
 
-=== "After"
+{{< /tab >}}
+{{< tab "After" >}}
 
-    ```yaml
-    archives:
-      ids: [a, b]
-    ```
+```yaml
+archives:
+  ids: [a, b]
+```
+
+{{< /tab >}}
+{{< /tabs >}}
 
 ### snaps.builds
 
@@ -406,19 +551,24 @@ used everywhere else.
 The `builds` field has been replaced with the `ids`, which is the nomenclature
 used everywhere else.
 
-=== "Before"
+{{< tabs >}}
+{{< tab "Before" >}}
 
-    ```yaml
-    snaps:
-      builds: [a, b]
-    ```
+```yaml
+snaps:
+  builds: [a, b]
+```
 
-=== "After"
+{{< /tab >}}
+{{< tab "After" >}}
 
-    ```yaml
-    snaps:
-      ids: [a, b]
-    ```
+```yaml
+snaps:
+  ids: [a, b]
+```
+
+{{< /tab >}}
+{{< /tabs >}}
 
 ### nfpms.builds
 
@@ -427,19 +577,24 @@ used everywhere else.
 The `builds` field has been replaced with the `ids`, which is the nomenclature
 used everywhere else.
 
-=== "Before"
+{{< tabs >}}
+{{< tab "Before" >}}
 
-    ```yaml
-    nfpms:
-      builds: [a, b]
-    ```
+```yaml
+nfpms:
+  builds: [a, b]
+```
 
-=== "After"
+{{< /tab >}}
+{{< tab "After" >}}
 
-    ```yaml
-    nfpms:
-      ids: [a, b]
-    ```
+```yaml
+nfpms:
+  ids: [a, b]
+```
+
+{{< /tab >}}
+{{< /tabs >}}
 
 ### archives.format
 
@@ -447,24 +602,28 @@ used everywhere else.
 
 Format was renamed to `formats`, and now accepts a list of formats.
 
-=== "Before"
+{{< tabs >}}
+{{< tab "Before" >}}
 
-    ```yaml
-    archives:
-      - format: zip
-    ```
+```yaml
+archives:
+  - format: zip
+```
 
-=== "After"
+{{< /tab >}}
+{{< tab "After" >}}
 
-    ```yaml
-    archives:
-      - formats: [ 'zip' ]
-    ```
+```yaml
+archives:
+  - formats: ["zip"]
+```
 
-!!! tip
+{{< /tab >}}
+{{< /tabs >}}
 
-    It will still accept a single string, e.g.: `formats: zip`.
-    In most cases you can simply rename the property to formats.
+> [!NOTE]
+> It will still accept a single string, e.g.: `formats: zip`.
+> In most cases you can simply rename the property to formats.
 
 ### archives.format_overrides.format
 
@@ -472,31 +631,34 @@ Format was renamed to `formats`, and now accepts a list of formats.
 
 Format was renamed to `formats`, and now accepts a list of formats.
 
-!!! tip
+> [!NOTE]
+> It will still accept a single string, e.g.: `formats: zip`.
+> In most cases you can simply rename the property to formats.
 
-    It will still accept a single string, e.g.: `formats: zip`.
-    In most cases you can simply rename the property to formats.
+{{< tabs >}}
+{{< tab "Before" >}}
 
-=== "Before"
+```yaml
+archives:
+  - format_overrides:
+      - format: zip
+```
 
-    ```yaml
-    archives:
-      - format_overrides:
-        - format: zip
-    ```
+{{< /tab >}}
+{{< tab "After" >}}
 
-=== "After"
+```yaml
+archives:
+  - format_overrides:
+      - formats: ["zip"]
+```
 
-    ```yaml
-    archives:
-      - format_overrides:
-        - formats: [ 'zip' ]
-    ```
+{{< /tab >}}
+{{< /tabs >}}
 
-!!! tip
-
-    It will still accept a single string, e.g.: `formats: zip`.
-    In most cases you can simply rename the property to formats.
+> [!NOTE]
+> It will still accept a single string, e.g.: `formats: zip`.
+> In most cases you can simply rename the property to formats.
 
 ### kos.repository
 
@@ -505,20 +667,25 @@ Format was renamed to `formats`, and now accepts a list of formats.
 Use `repositories` instead. It allows to create multiple images with Ko, without
 having to rebuild each of them.
 
-=== "Before"
+{{< tabs >}}
+{{< tab "Before" >}}
 
-    ```yaml
-    kos:
-      - repository: foo/bar
-    ```
+```yaml
+kos:
+  - repository: foo/bar
+```
 
-=== "After"
+{{< /tab >}}
+{{< tab "After" >}}
 
-    ```yaml
-    kos:
-      - repositories:
-          - foo/bar
-    ```
+```yaml
+kos:
+  - repositories:
+      - foo/bar
+```
+
+{{< /tab >}}
+{{< /tabs >}}
 
 ### builds.gobinary
 
@@ -526,19 +693,24 @@ having to rebuild each of them.
 
 The property was renamed to `tool`, as to better accommodate multiple languages.
 
-=== "Before"
+{{< tabs >}}
+{{< tab "Before" >}}
 
-    ```yaml
-    builds:
-      - gobinary: 'go1.2.3'
-    ```
+```yaml
+builds:
+  - gobinary: "go1.2.3"
+```
 
-=== "After"
+{{< /tab >}}
+{{< tab "After" >}}
 
-    ```yaml
-    builds:
-      - tool: 'go1.2.3'
-    ```
+```yaml
+builds:
+  - tool: "go1.2.3"
+```
+
+{{< /tab >}}
+{{< /tabs >}}
 
 ### kos.sbom
 
@@ -555,19 +727,24 @@ We recommend you change it to `spdx`.
 
 Property renamed so its easier to reason about.
 
-=== "Before"
+{{< tabs >}}
+{{< tab "Before" >}}
 
-    ```yaml
-    nightly:
-      name_template: 'foo'
-    ```
+```yaml
+nightly:
+  name_template: "foo"
+```
 
-=== "After"
+{{< /tab >}}
+{{< tab "After" >}}
 
-    ```yaml
-    nightly:
-      version_template: 'foo'
-    ```
+```yaml
+nightly:
+  version_template: "foo"
+```
+
+{{< /tab >}}
+{{< /tabs >}}
 
 ### snapshot.name_template
 
@@ -575,19 +752,24 @@ Property renamed so its easier to reason about.
 
 Property renamed so its easier to reason about.
 
-=== "Before"
+{{< tabs >}}
+{{< tab "Before" >}}
 
-    ```yaml
-    snapshot:
-      name_template: 'foo'
-    ```
+```yaml
+snapshot:
+  name_template: "foo"
+```
 
-=== "After"
+{{< /tab >}}
+{{< tab "After" >}}
 
-    ```yaml
-    snapshot:
-      version_template: 'foo'
-    ```
+```yaml
+snapshot:
+  version_template: "foo"
+```
+
+{{< /tab >}}
+{{< /tabs >}}
 
 ## Removed in v2
 
@@ -597,21 +779,24 @@ Property renamed so its easier to reason about.
 
 Property was renamed to be consistent across all configurations.
 
-=== "Before"
+{{< tabs >}}
+{{< tab "Before" >}}
 
-    ```yaml
-    archives:
-      -
-        strip_parent_binary_folder: true
-    ```
+```yaml
+archives:
+  - strip_parent_binary_folder: true
+```
 
-=== "After"
+{{< /tab >}}
+{{< tab "After" >}}
 
-    ```yaml
-    archives:
-      -
-        strip_binary_directory: true
-    ```
+```yaml
+archives:
+  - strip_binary_directory: true
+```
+
+{{< /tab >}}
+{{< /tabs >}}
 
 ### blobs.folder
 
@@ -619,21 +804,24 @@ Property was renamed to be consistent across all configurations.
 
 Property was renamed to be consistent across all configurations.
 
-=== "Before"
+{{< tabs >}}
+{{< tab "Before" >}}
 
-    ```yaml
-    blobs:
-      -
-        folder: foo
-    ```
+```yaml
+blobs:
+  - folder: foo
+```
 
-=== "After"
+{{< /tab >}}
+{{< tab "After" >}}
 
-    ```yaml
-    blobs:
-      -
-        directory: foo
-    ```
+```yaml
+blobs:
+  - directory: foo
+```
+
+{{< /tab >}}
+{{< /tabs >}}
 
 ### brews.folder
 
@@ -641,21 +829,24 @@ Property was renamed to be consistent across all configurations.
 
 Property was renamed to be consistent across all configurations.
 
-=== "Before"
+{{< tabs >}}
+{{< tab "Before" >}}
 
-    ```yaml
-    brews:
-      -
-        folder: foo
-    ```
+```yaml
+brews:
+  - folder: foo
+```
 
-=== "After"
+{{< /tab >}}
+{{< tab "After" >}}
 
-    ```yaml
-    brews:
-      -
-        directory: foo
-    ```
+```yaml
+brews:
+  - directory: foo
+```
+
+{{< /tab >}}
+{{< /tabs >}}
 
 ### scoops.folder
 
@@ -663,21 +854,24 @@ Property was renamed to be consistent across all configurations.
 
 Property was renamed to be consistent across all configurations.
 
-=== "Before"
+{{< tabs >}}
+{{< tab "Before" >}}
 
-    ```yaml
-    scoops:
-      -
-        folder: foo
-    ```
+```yaml
+scoops:
+  - folder: foo
+```
 
-=== "After"
+{{< /tab >}}
+{{< tab "After" >}}
 
-    ```yaml
-    scoops:
-      -
-        directory: foo
-    ```
+```yaml
+scoops:
+  - directory: foo
+```
+
+{{< /tab >}}
+{{< /tabs >}}
 
 ### furies.skip
 
@@ -685,19 +879,24 @@ Property was renamed to be consistent across all configurations.
 
 Changed to `disable` to conform with all other pipes.
 
-=== "Before"
+{{< tabs >}}
+{{< tab "Before" >}}
 
-    ```yaml
-    furies:
-      - skip: true
-    ```
+```yaml
+furies:
+  - skip: true
+```
 
-=== "After"
+{{< /tab >}}
+{{< tab "After" >}}
 
-    ```yaml
-    furies:
-      - disable: true
-    ```
+```yaml
+furies:
+  - disable: true
+```
+
+{{< /tab >}}
+{{< /tabs >}}
 
 ### changelog.skip
 
@@ -705,19 +904,24 @@ Changed to `disable` to conform with all other pipes.
 
 Changed to `disable` to conform with all other pipes.
 
-=== "Before"
+{{< tabs >}}
+{{< tab "Before" >}}
 
-    ```yaml
-    changelog:
-      skip: true
-    ```
+```yaml
+changelog:
+  skip: true
+```
 
-=== "After"
+{{< /tab >}}
+{{< tab "After" >}}
 
-    ```yaml
-    changelog:
-      disable: true
-    ```
+```yaml
+changelog:
+  disable: true
+```
+
+{{< /tab >}}
+{{< /tabs >}}
 
 ### blobs.kmskey
 
@@ -725,19 +929,24 @@ Changed to `disable` to conform with all other pipes.
 
 Changed to `kms_key` to conform with all other options.
 
-=== "Before"
+{{< tabs >}}
+{{< tab "Before" >}}
 
-    ```yaml
-    blobs:
-      - kmskey: foo
-    ```
+```yaml
+blobs:
+  - kmskey: foo
+```
 
-=== "After"
+{{< /tab >}}
+{{< tab "After" >}}
 
-    ```yaml
-    blobs:
-      - kms_key: foo
-    ```
+```yaml
+blobs:
+  - kms_key: foo
+```
+
+{{< /tab >}}
+{{< /tabs >}}
 
 ### blobs.disableSSL
 
@@ -745,19 +954,24 @@ Changed to `kms_key` to conform with all other options.
 
 Changed to `disable_ssl` to conform with all other options.
 
-=== "Before"
+{{< tabs >}}
+{{< tab "Before" >}}
 
-    ```yaml
-    blobs:
-      - disableSSL: true
-    ```
+```yaml
+blobs:
+  - disableSSL: true
+```
 
-=== "After"
+{{< /tab >}}
+{{< tab "After" >}}
 
-    ```yaml
-    blobs:
-      - disable_ssl: true
-    ```
+```yaml
+blobs:
+  - disable_ssl: true
+```
+
+{{< /tab >}}
+{{< /tabs >}}
 
 ### `--skip`
 
@@ -783,24 +997,29 @@ By the same token, the following `goreleaser build` flags were deprecated:
 All these flags are now under a single `--skip` flag, that accepts multiple
 values.
 
-=== "Before"
+{{< tabs >}}
+{{< tab "Before" >}}
 
-    ```sh
-    goreleaser build --skip-before --skip-validate
-    goreleaser release --skip-validate --skip-publish
-    ```
+```sh
+goreleaser build --skip-before --skip-validate
+goreleaser release --skip-validate --skip-publish
+```
 
-=== "After"
+{{< /tab >}}
+{{< tab "After" >}}
 
-    ```sh
-    goreleaser build --skip=before,validate
-    goreleaser release --skip=validate,publish
+```sh
+goreleaser build --skip=before,validate
+goreleaser release --skip=validate,publish
 
-    # or
+# or
 
-    goreleaser build --skip=before --skip=validate
-    goreleaser release --skip=validate --skip=publish
-    ```
+goreleaser build --skip=before --skip=validate
+goreleaser release --skip=validate --skip=publish
+```
+
+{{< /tab >}}
+{{< /tabs >}}
 
 You can check `goreleaser build --help` and `goreleaser release --help` to see
 the valid options, and shell autocompletion should work properly as well.
@@ -811,25 +1030,28 @@ the valid options, and shell autocompletion should work properly as well.
 
 Replace `bucket` with `repository`.
 
-=== "Before"
+{{< tabs >}}
+{{< tab "Before" >}}
 
-    ```yaml
-    scoops:
-      -
-        bucket:
-          - name: foo
-            owner: bar
-    ```
+```yaml
+scoops:
+  - bucket:
+      - name: foo
+        owner: bar
+```
 
-=== "After"
+{{< /tab >}}
+{{< tab "After" >}}
 
-    ```yaml
-    scoops:
-      -
-        repository:
-          - name: foo
-            owner: bar
-    ```
+```yaml
+scoops:
+  - repository:
+      - name: foo
+        owner: bar
+```
+
+{{< /tab >}}
+{{< /tabs >}}
 
 ### krews.index
 
@@ -837,25 +1059,28 @@ Replace `bucket` with `repository`.
 
 Replace `index` with `repository`.
 
-=== "Before"
+{{< tabs >}}
+{{< tab "Before" >}}
 
-    ```yaml
-    krews:
-      -
-        index:
-          - name: foo
-            owner: bar
-    ```
+```yaml
+krews:
+  - index:
+      - name: foo
+        owner: bar
+```
 
-=== "After"
+{{< /tab >}}
+{{< tab "After" >}}
 
-    ```yaml
-    krews:
-      -
-        repository:
-          - name: foo
-            owner: bar
-    ```
+```yaml
+krews:
+  - repository:
+      - name: foo
+        owner: bar
+```
+
+{{< /tab >}}
+{{< /tabs >}}
 
 ### brews.tap
 
@@ -863,25 +1088,28 @@ Replace `index` with `repository`.
 
 Replace `tap` with `repository`.
 
-=== "Before"
+{{< tabs >}}
+{{< tab "Before" >}}
 
-    ```yaml
-    brews:
-      -
-        tap:
-          - name: foo
-            owner: bar
-    ```
+```yaml
+brews:
+  - tap:
+      - name: foo
+        owner: bar
+```
 
-=== "After"
+{{< /tab >}}
+{{< tab "After" >}}
 
-    ```yaml
-    brews:
-      -
-        repository:
-          - name: foo
-            owner: bar
-    ```
+```yaml
+brews:
+  - repository:
+      - name: foo
+        owner: bar
+```
+
+{{< /tab >}}
+{{< /tabs >}}
 
 ### archives.rlcp
 
@@ -890,16 +1118,12 @@ Replace `tap` with `repository`.
 This option is now default and can't be changed. You can remove it from your
 configuration files.
 
-See [this](./old-deprecations.md#archivesrlcp) for more info.
-
 ### source.rlcp
 
 > since 2023-06-06 (v1.19.0), removed 2024-05-26 (v2.0)
 
 This option is now default and can't be changed. You can remove it from your
 configuration files.
-
-See [this](./old-deprecations.md#sourcerlcp) for more info.
 
 ### brews.plist
 
@@ -908,29 +1132,32 @@ See [this](./old-deprecations.md#sourcerlcp) for more info.
 `plist` is deprecated by Homebrew, and now on GoReleaser too. Use `service`
 instead.
 
-=== "Before"
+{{< tabs >}}
+{{< tab "Before" >}}
 
-    ```yaml
-    brews:
-    -
-      plist: |
-        <?xml version="1.0" encoding="UTF-8"?>
-        <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
-        <plist version="1.0">
-        <dict>
-        # etc ...
-    ```
+```yaml
+brews:
+  - plist: |
+      <?xml version="1.0" encoding="UTF-8"?>
+      <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+      <plist version="1.0">
+      <dict>
+      # etc ...
+```
 
-=== "After"
+{{< /tab >}}
+{{< tab "After" >}}
 
-    ```yaml
-    brews:
-    -
-      service: |
-        run [opt_bin/"mybin"]
-        keep_alive true
-        # etc ...
-    ```
+```yaml
+brews:
+  - service: |
+      run [opt_bin/"mybin"]
+      keep_alive true
+      # etc ...
+```
+
+{{< /tab >}}
+{{< /tabs >}}
 
 ### --debug
 
@@ -938,38 +1165,48 @@ instead.
 
 `--debug` has been deprecated in favor of `--verbose`.
 
-=== "Before"
+{{< tabs >}}
+{{< tab "Before" >}}
 
-    ```bash
-    goreleaser release --debug
-    ```
+```bash
+goreleaser release --debug
+```
 
-=== "After"
+{{< /tab >}}
+{{< tab "After" >}}
 
-    ```bash
-    goreleaser release --verbose
-    ```
+```bash
+goreleaser release --verbose
+```
+
+{{< /tab >}}
+{{< /tabs >}}
 
 ### scoop
 
 > since 2023-04-30 (v1.18.0), removed 2024-05-26 (v2.0)
 
 GoReleaser now allows many `scoop` configurations, so it should be pluralized
-[accordingly](customization/scoop.md).
+[accordingly](/customization/publish/scoop/).
 
-=== "Before"
+{{< tabs >}}
+{{< tab "Before" >}}
 
-    ```yaml
-    scoop:
-      # ...
-    ```
+```yaml
+scoop:
+  # ...
+```
 
-=== "After"
+{{< /tab >}}
+{{< tab "After" >}}
 
-    ```yaml
-    scoops:
-    - # ...
-    ```
+```yaml
+scoops:
+  -  # ...
+```
+
+{{< /tab >}}
+{{< /tabs >}}
 
 ### build
 
@@ -979,21 +1216,26 @@ This option was still being supported, even though undocumented, for a couple
 of years now. It's finally time to sunset it.
 
 Simply use the pluralized form, `builds`, according to the
-[documentation](./customization/builds/index.md).
+[documentation](/customization/builds/index/).
 
-=== "Before"
+{{< tabs >}}
+{{< tab "Before" >}}
 
-    ```yaml
-    build:
-      # ...
-    ```
+```yaml
+build:
+  # ...
+```
 
-=== "After"
+{{< /tab >}}
+{{< tab "After" >}}
 
-    ```yaml
-    builds:
-    - # ...
-    ```
+```yaml
+builds:
+  -  # ...
+```
+
+{{< /tab >}}
+{{< /tabs >}}
 
 ### --rm-dist
 
@@ -1001,17 +1243,22 @@ Simply use the pluralized form, `builds`, according to the
 
 `--rm-dist` has been deprecated in favor of `--clean`.
 
-=== "Before"
+{{< tabs >}}
+{{< tab "Before" >}}
 
-    ```bash
-    goreleaser release --rm-dist
-    ```
+```bash
+goreleaser release --rm-dist
+```
 
-=== "After"
+{{< /tab >}}
+{{< tab "After" >}}
 
-    ```bash
-    goreleaser release --clean
-    ```
+```bash
+goreleaser release --clean
+```
+
+{{< /tab >}}
+{{< /tabs >}}
 
 ### nfpms.maintainer
 
@@ -1019,20 +1266,21 @@ Simply use the pluralized form, `builds`, according to the
 
 nFPM will soon make mandatory setting the maintainer field.
 
-=== "Before"
+{{< tabs >}}
+{{< tab "Before" >}}
 
-    ```yaml
-    nfpms:
-    - maintainer: ''
-    ```
+```yaml
+nfpms:
+  - maintainer: ""
+```
 
-=== "After"
+{{< /tab >}}
+{{< tab "After" >}}
 
-    ```yaml
-    nfpms:
-    - maintainer: 'Name <email>'
-    ```
+```yaml
+nfpms:
+  - maintainer: "Name <email>"
+```
 
-## Previous versions
-
-Deprecations that were removed in v1.x or earlier have been moved into its [own page](./old-deprecations.md).
+{{< /tab >}}
+{{< /tabs >}}

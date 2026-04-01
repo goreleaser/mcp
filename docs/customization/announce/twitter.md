@@ -1,9 +1,11 @@
-# 𝕏/Twitter
+---
+title: "𝕏/Twitter"
+weight: 130
+---
 
-!!! warning
-
-    Twitter has [announced][tw] that API usage will no longer be free starting
-    Feb 9, 2023.
+> [!WARNING]
+> Twitter has [announced][tw] that API usage will no longer be free starting
+> Feb 9, 2023.
 
 [tw]: https://twitter.com/TwitterDev/status/1621026986784337922
 
@@ -17,12 +19,12 @@ some environment variables on your pipeline:
 
 Then, you can add something like the following to your `.goreleaser.yaml` config:
 
-```yaml title=".goreleaser.yaml"
+```yaml {filename=".goreleaser.yaml"}
 announce:
   twitter:
     # Whether its enabled or not.
     #
-    # Templates: allowed (since v2.6).
+    # Templates: allowed. {{< inline_version "v2.6" >}}
     enabled: true
 
     # Message template to use while publishing.
@@ -32,4 +34,4 @@ announce:
     message_template: "Awesome project {{.Tag}} is out!"
 ```
 
-<!-- md:templates -->
+{{< templates >}}

@@ -1,4 +1,7 @@
-# Mattermost
+---
+title: "Mattermost"
+weight: 60
+---
 
 For it to work, you'll need to [create a new Incoming Webhook](https://docs.mattermost.com/developer/webhooks-incoming.html) in your own Mattermost deployment, and set some
 environment variables on your pipeline:
@@ -7,12 +10,12 @@ environment variables on your pipeline:
 
 Then, you can add something like the following to your `.goreleaser.yaml` config:
 
-```yaml title=".goreleaser.yaml"
+```yaml {filename=".goreleaser.yaml"}
 announce:
   mattermost:
     # Whether its enabled or not.
     #
-    # Templates: allowed (since v2.6).
+    # Templates: allowed. {{< inline_version "v2.6" >}}
     enabled: true
 
     # Title to use while publishing.
@@ -44,4 +47,4 @@ announce:
     icon_url: ""
 ```
 
-<!-- md:templates -->
+{{< templates >}}

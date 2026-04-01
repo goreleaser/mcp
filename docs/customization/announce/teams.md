@@ -1,4 +1,7 @@
-# Teams
+---
+title: "Teams"
+weight: 110
+---
 
 To use [Teams](https://www.microsoft.com/de-de/microsoft-teams/group-chat-software), you need
 to [create a Webhook](https://docs.microsoft.com/en-us/microsoftteams/platform/webhooks-and-connectors/how-to/add-incoming-webhook)
@@ -8,12 +11,12 @@ to [create a Webhook](https://docs.microsoft.com/en-us/microsoftteams/platform/w
 
 After this, you can add following section to your `.goreleaser.yaml` config:
 
-```yaml title=".goreleaser.yaml"
+```yaml {filename=".goreleaser.yaml"}
 announce:
   teams:
     # Whether its enabled or not.
     #
-    # Templates: allowed (since v2.6).
+    # Templates: allowed. {{< inline_version "v2.6" >}}
     enabled: true
 
     # Title template to use while publishing.
@@ -39,4 +42,4 @@ announce:
     icon_url: ""
 ```
 
-<!-- md:templates -->
+{{< templates >}}

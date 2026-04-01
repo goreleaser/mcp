@@ -1,4 +1,7 @@
-# Bluesky
+---
+title: "Bluesky"
+weight: 10
+---
 
 To use [Bluesky](https://bsky.app/), you need to create an account, and set the
 following environment variable on your pipeline:
@@ -8,12 +11,12 @@ following environment variable on your pipeline:
 After this, you can add following section to your `.goreleaser.yaml`
 configuration:
 
-```yaml title=".goreleaser.yaml"
+```yaml {filename=".goreleaser.yaml"}
 announce:
   bluesky:
     # Whether it's enabled or not.
     #
-    # Templates: allowed (since v2.6).
+    # Templates: allowed. {{< inline_version "v2.6" >}}
     enabled: true
 
     # Message template to use while publishing.
@@ -27,4 +30,4 @@ announce:
     username: "my-project.bsky.social"
 ```
 
-<!-- md:templates -->
+{{< templates >}}

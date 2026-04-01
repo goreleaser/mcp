@@ -1,21 +1,23 @@
-# LinkedIn
+---
+title: "LinkedIn"
+weight: 40
+---
 
 For it to work, you'll need to set some environment variables on your pipeline:
 
 - `LINKEDIN_ACCESS_TOKEN`
 
-!!! warning
-
-    We currently don't support posting in groups.
+> [!WARNING]
+> We currently don't support posting in groups.
 
 Then, you can add something like the following to your `.goreleaser.yaml` config:
 
-```yaml title=".goreleaser.yaml"
+```yaml {filename=".goreleaser.yaml"}
 announce:
   linkedin:
     # Whether its enabled or not.
     #
-    # Templates: allowed (since v2.6).
+    # Templates: allowed. {{< inline_version "v2.6" >}}
     enabled: true
 
     # Message to use while publishing.
@@ -24,4 +26,4 @@ announce:
     message_template: "Awesome project {{.Tag}} is out!"
 ```
 
-<!-- md:templates -->
+{{< templates >}}

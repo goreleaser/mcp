@@ -1,4 +1,7 @@
-# Build Hooks
+---
+title: Build Hooks
+weight: 100
+---
 
 Both pre and post hooks are run **for each build target**, regardless of whether
 these targets are generated via a matrix of OSes and architectures or defined
@@ -8,7 +11,7 @@ In addition to simple declarations as shown above _multiple_ hooks can be
 declared to help retaining reusability of configuration between different build
 environments.
 
-```yaml title=".goreleaser.yaml"
+```yaml {filename=".goreleaser.yaml"}
 builds:
   - id: "with-hooks"
     builder: go
@@ -26,7 +29,7 @@ builds:
 
 Each hook can also have its own work directory and environment variables:
 
-```yaml title=".goreleaser.yaml"
+```yaml {filename=".goreleaser.yaml"}
 builds:
   - id: "with-hooks"
     builder: go
@@ -46,7 +49,7 @@ builds:
 ```
 
 All properties of a hook (`cmd`, `dir` and `env`) support
-[templating](../templates.md) with `post` hooks having binary artifact
+[templating](/customization/general/templates/) with `post` hooks having binary artifact
 available (as these run _after_ the build).
 Additionally the following build details are exposed to both `pre` and `post`
 hooks:
@@ -64,4 +67,4 @@ Environment variables are inherited and overridden in the following order:
 - build (`builds[].env`)
 - hook (`builds[].hooks.pre[].env` and `builds[].hooks.post[].env`)
 
-<!-- md:templates -->
+{{< templates >}}

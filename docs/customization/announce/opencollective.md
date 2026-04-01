@@ -1,4 +1,7 @@
-# OpenCollective
+---
+title: "OpenCollective"
+weight: 70
+---
 
 For it to work, you'll need to create a personal token (`https://opencollective.com/<user>/admin/for-developers`) and set the environment variable on your pipeline:
 
@@ -6,12 +9,12 @@ For it to work, you'll need to create a personal token (`https://opencollective.
 
 Then, you can add something like the following to your `.goreleaser.yaml` config:
 
-```yaml title=".goreleaser.yaml"
+```yaml {filename=".goreleaser.yaml"}
 announce:
   opencollective:
     # Whether its enabled or not.
     #
-    # Templates: allowed (since v2.6).
+    # Templates: allowed. {{< inline_version "v2.6" >}}
     enabled: true
 
     # Collective slug
@@ -31,4 +34,4 @@ announce:
     message_template: "Awesome project {{.Tag}} is out!"
 ```
 
-<!-- md:templates -->
+{{< templates >}}

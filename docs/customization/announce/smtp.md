@@ -1,4 +1,7 @@
-# Email/SMTP
+---
+title: "Email/SMTP"
+weight: 100
+---
 
 For it to work, you'll need to set some environment variables on your pipeline:
 
@@ -6,12 +9,12 @@ For it to work, you'll need to set some environment variables on your pipeline:
 
 Then, you can add something like the following to your `.goreleaser.yaml` config:
 
-```yaml title=".goreleaser.yaml"
+```yaml {filename=".goreleaser.yaml"}
 announce:
   smtp:
     # Whether its enabled or not.
     #
-    # Templates: allowed (since v2.6).
+    # Templates: allowed. {{< inline_version "v2.6" >}}
     enabled: true
 
     # SMTP Host.
@@ -50,4 +53,4 @@ announce:
     subject_template: "GoReleaser {{ .Tag }} was just released!"
 ```
 
-<!-- md:templates -->
+{{< templates >}}

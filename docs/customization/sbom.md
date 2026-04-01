@@ -1,4 +1,7 @@
-# Cataloging artifacts
+---
+title: "SBOMs"
+weight: 35
+---
 
 A Software Bill of Materials (SBOM) is a description of the components that make
 up a software artifact.
@@ -16,7 +19,7 @@ The default is configured to create an SBOM for each archive produced with
 
 To customize the artifact cataloging pipeline you can use the following options:
 
-```yaml title=".goreleaser.yaml"
+```yaml {filename=".goreleaser.yaml"}
 sboms:
   - # ID of the sbom config, must be unique.
     #
@@ -72,8 +75,8 @@ sboms:
     #               the cwd should be cataloged
     # - source:     source archive
     # - package:    Linux packages (deb, rpm, apk, etc)
-    # - installer:  Windows MSI installers (Pro only)
-    # - diskimage:  macOS DMG disk images (Pro only)
+    # - installer:  Installers (MSI, NSIS, macOS pkgs) {{< inline_pro >}}
+    # - diskimage:  macOS DMG disk images {{< inline_pro >}}
     # - archive:    archives from archive pipe
     # - binary:     binaries output from the build stage
     #
@@ -91,7 +94,7 @@ sboms:
     #
     # Default: 'true'.
     # Templates: allowed.
-    # <!-- md:inline_version v2.10 -->.
+    # {{< inline_version "v2.10" >}}
     disable: true
 ```
 

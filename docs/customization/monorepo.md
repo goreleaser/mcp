@@ -1,6 +1,9 @@
-# Monorepo
+---
+title: "Monorepo"
+weight: 25
+---
 
-<!-- md:pro -->
+{{< featpro >}}
 
 If you want to use GoReleaser within a monorepo and use tag prefixes to mark
 "which tags belong to which sub project", GoReleaser has you covered.
@@ -20,8 +23,7 @@ You project falls into either one of these categories:
 You'll need to create a `.goreleaser.yaml` for each subproject you want to use
 GoReleaser in:
 
-```yaml
-# subroj1/.goreleaser.yaml
+```yaml {filename="subroj1/.goreleaser.yaml"}
 project_name: subproj1
 
 monorepo:
@@ -58,7 +60,7 @@ The rest of the release process should work as usual.
 You'll need to create a `.goreleaser.yaml` for your Go code in the root of the
 project:
 
-```yaml title=".goreleaser.yaml"
+```yaml {filename=".goreleaser.yaml"}
 monorepo:
   tag_prefix: v
 ```
@@ -74,13 +76,11 @@ should work as expected from there on.
 
 ## A note about gomods and prefixed tags
 
-!!! note
+> [!NOTE]
+> If you have a `github.com/user/repo/moda` module, its tags should be named
+> `moda/v1.2.3`.
+> This will allow users to `go get github.com/user/repo/moda@v1.2.3`, and
+> everything should work as you'd expect.
 
-    If you have a `github.com/user/repo/moda` module, its tags should be named
-    `moda/v1.2.3`.
-    This will allow users to `go get github.com/user/repo/moda@v1.2.3`, and
-    everything should work as you'd expect.
-
-!!! warning
-
-    Tag prefixes that do not match the module name are not supported by go mods.
+> [!WARNING]
+> Tag prefixes that do not match the module name are not supported by go mods.

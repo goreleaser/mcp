@@ -1,4 +1,7 @@
-# Reddit
+---
+title: "Reddit"
+weight: 80
+---
 
 For it to work, you'll need to [create a new Reddit app](https://www.reddit.com/prefs/apps), and set some environment
 variables on your pipeline:
@@ -8,12 +11,12 @@ variables on your pipeline:
 
 Then, you can add something like the following to your `.goreleaser.yaml` config:
 
-```yaml title=".goreleaser.yaml"
+```yaml {filename=".goreleaser.yaml"}
 announce:
   reddit:
     # Whether its enabled or not.
     #
-    # Templates: allowed (since v2.6).
+    # Templates: allowed. {{< inline_version "v2.6" >}}
     enabled: true
 
     # Application ID for Reddit Application
@@ -35,4 +38,4 @@ announce:
     title_template: ''GoReleaser {{ .Tag }} was just released!''
 ```
 
-<!-- md:templates -->
+{{< templates >}}

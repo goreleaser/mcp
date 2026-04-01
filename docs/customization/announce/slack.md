@@ -1,4 +1,7 @@
-# Slack
+---
+title: "Slack"
+weight: 90
+---
 
 For it to work, you'll need to [create a new Incoming Webhook](https://api.slack.com/messaging/webhooks), and set some
 environment variables on your pipeline:
@@ -7,12 +10,12 @@ environment variables on your pipeline:
 
 Then, you can add something like the following to your `.goreleaser.yaml` config:
 
-```yaml title=".goreleaser.yaml"
+```yaml {filename=".goreleaser.yaml"}
 announce:
   slack:
     # Whether its enabled or not.
     #
-    # Templates: allowed (since v2.6).
+    # Templates: allowed. {{< inline_version "v2.6" >}}
     enabled: true
 
     # Message template to use while publishing.
@@ -51,4 +54,4 @@ announce:
     attachments: []
 ```
 
-<!-- md:templates -->
+{{< templates >}}

@@ -1,4 +1,7 @@
-# WebHooks
+---
+title: "WebHooks"
+weight: 140
+---
 
 WebHooks are a way to receive notifications.
 With this GoReleaser functionality, you can send events to any server
@@ -11,12 +14,12 @@ If your endpoints are not secure, you can use following environment variables to
 
 Add following to your `.goreleaser.yaml` configuration to enable the WebHook functionality:
 
-```yaml title=".goreleaser.yaml"
+```yaml {filename=".goreleaser.yaml"}
 announce:
   webhook:
     # Whether its enabled or not.
     #
-    # Templates: allowed (since v2.6).
+    # Templates: allowed. {{< inline_version "v2.6" >}}
     enabled: true
 
     # Check the certificate of the webhook.
@@ -48,4 +51,4 @@ announce:
     expected_status_codes: [418, 200, 201]
 ```
 
-<!-- md:templates -->
+{{< templates >}}
