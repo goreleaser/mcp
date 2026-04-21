@@ -80,10 +80,10 @@ krews:
     # in case there is an indicator for prerelease in the tag e.g. v1.0.0-rc1
     skip_upload: true
 
-{{% include file="includes/repository.md" %}}
+{{% g_include file="includes/repository.md" %}}
 ```
 
-{{< templates >}}
+{{< g_templates >}}
 
 ## Limitations
 
@@ -91,5 +91,5 @@ krews:
 - Binary releases (when `archives.format` is set to `binary`) are not allowed;
 - Only one `GOARM` build is allowed;
 
-{{% include file="includes/prs.md" %}}
+{{% g_include file="includes/prs.md" %}}
 

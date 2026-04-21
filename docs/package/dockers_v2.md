@@ -1,8 +1,8 @@
 # Docker (v2)
 
-{{< version "v2.12" >}}
+{{< g_version "v2.12" >}}
 
-{{< experimental "https://github.com/orgs/goreleaser/discussions/6005" >}}
+{{< g_experimental "https://github.com/orgs/goreleaser/discussions/6005" >}}
 
 This feature uses `docker buildx` to build multi-arch manifests,
 reusing the previously built binaries and/or packages.
@@ -92,7 +92,7 @@ dockers_v2:
     # Platforms to build.
     #
     # Default: [ linux/amd64 linux/arm64 ]
-    # Templates: allowed. {{< inline_version "v2.14" >}}
+    # Templates: allowed. {{< g_inline_version "v2.14" >}}
     platforms:
       - linux/amd64
       - linux/arm64
@@ -100,14 +100,14 @@ dockers_v2:
     # Whether to disable this particular Docker configuration.
     #
     # Templates: allowed.
-    # {{< inline_version "v2.12" >}}
+    # {{< g_inline_version "v2.12" >}}
     disable: "{{ .IsSnapshot }}"
 
     # Whether to create and attach a SBOM to the image.
     #
     # Default: 'true'
     # Templates: allowed.
-    # {{< inline_version "v2.12" >}}
+    # {{< g_inline_version "v2.12" >}}
     sbom: "{{ not .IsNightly }}"
 
     # Additional `--build-arg`s to be passed.
@@ -154,7 +154,7 @@ dockers_v2:
 > We are doing it this way to prevent breaking changes releases now, so we can
 > test this new version for a while, before launching v3.
 
-{{< templates >}}
+{{< g_templates >}}
 
 ## Testing locally
 

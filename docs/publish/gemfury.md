@@ -2,7 +2,7 @@
 
 # GemFury - apt and rpm repositories
 
-{{< featpro >}}
+{{< g_featpro >}}
 
 You can easily create `deb` and `yum` repositories on [Fury][fury] using GoReleaser.
 
@@ -53,10 +53,10 @@ gemfury:
     # Default: ['apk', deb', 'rpm'].
     formats:
       - deb
-      - apk # {{< inline_version "v2.7" >}}
+      - apk # {{< g_inline_version "v2.7" >}}
 ```
 
 [fury]: https://gemfury.com
 
-{{< templates >}}
+{{< g_templates >}}
 

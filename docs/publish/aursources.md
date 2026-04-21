@@ -1,6 +1,6 @@
 # Arch User Repositories (Sources)
 
-{{< version "v2.5" >}}
+{{< g_version "v2.5" >}}
 
 After releasing to GitHub, GitLab, or Gitea, GoReleaser can generate and publish
 a `PKGBUILD` to an _Arch User Repository_ based on sources.
@@ -132,7 +132,7 @@ aur_sources:
     # In this file, you may define functions like `pre_install`, `post_install`,
     # and so on.
     #
-    # {{< inline_version "v2.8" >}}
+    # {{< g_inline_version "v2.8" >}}
     install: ./scripts/install.sh
 
     # Commit message.
@@ -171,14 +171,14 @@ aur_sources:
     # Whether to disable this particular AUR configuration.
     #
     # Templates: allowed.
-    # {{< inline_version "v2.8" >}}
+    # {{< g_inline_version "v2.8" >}}
     disable: "{{ .IsSnapshot }}"
 
-{{% include file="includes/commit_author.md" %}}
+{{% g_include file="includes/commit_author.md" %}}
 
 ```
 
-{{< templates >}}
+{{< g_templates >}}
 
 > [!NOTE]
 > For more info about what each field does, please refer to

@@ -109,8 +109,8 @@ publishers:
     #
     # Artifacts that do not match this expression will be ignored.
     #
-    # {{< inline_pro >}}
-    # {{< inline_version "v2.5" >}}
+    # {{< g_inline_pro >}}
+    # {{< g_inline_version "v2.5" >}}
     # Templates: allowed.
     if: '{{ eq .Os "linux" }}'
 
@@ -167,7 +167,7 @@ publishers:
     # (assuming artifact name is 'foo.deb').
     #
     # Templates: allowed.
-    # {{< inline_version "v2.11" >}}
+    # {{< g_inline_version "v2.11" >}}
     output: "check-{{ .ArtifactName }}"
 ```
 
@@ -178,5 +178,5 @@ These settings should allow you to push your artifacts to any number of
 endpoints, which may require non-trivial authentication or has otherwise complex
 requirements.
 
-{{< templates >}}
+{{< g_templates >}}
 

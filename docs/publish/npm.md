@@ -1,8 +1,8 @@
 # NPM
 
-{{< version "v2.8" >}}
+{{< g_version "v2.8" >}}
 
-{{< featpro >}}
+{{< g_featpro >}}
 
 The `npms` section configures how GoReleaser publishes your packages to NPM
 registries.
@@ -108,7 +108,7 @@ npms:
     #
     # Default: 'latest'.
     # Templates: allowed.
-    # {{< inline_version "v2.13" >}}
+    # {{< g_inline_version "v2.13" >}}
     tag: latest
 
     # Package format: tar, tgz, tar.gz, zip, or binary.
@@ -133,12 +133,12 @@ npms:
     #
     # Default depends on the client.
     # Templates: allowed.
-    # {{< inline_version "v2.10" >}}
+    # {{< g_inline_version "v2.10" >}}
     url_template: "https://github.mycompany.com/foo/bar/releases/download/{{ .Tag }}/{{ .ArtifactName }}"
 
     # Set extra fields at the root level of the generated package.json.
     #
-    # {{< inline_version "v2.13" >}}
+    # {{< g_inline_version "v2.13" >}}
     extra:
       mcpName: io.github.foo/bar
       complex:
@@ -150,7 +150,7 @@ npms:
 >
 > This will not work if the user installs with `--ignore-scripts`.
 
-{{< templates >}}
+{{< g_templates >}}
 
 ## Supported platforms and formats
 

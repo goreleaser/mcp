@@ -1,6 +1,6 @@
 # Signing binaries
 
-{{< version "v2.2" >}}
+{{< g_version "v2.2" >}}
 
 This can be used to archive the binaries with their signatures, instead of
 signing the whole archive.
@@ -65,7 +65,7 @@ binary_signs:
     #
     # Artifacts that do not match this expression will be ignored.
     #
-    # {{< inline_pro >}}
+    # {{< g_inline_pro >}}
     # Templates: allowed.
     if: '{{ eq .Os "linux" }}'
 

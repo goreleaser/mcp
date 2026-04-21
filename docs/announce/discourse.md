@@ -1,6 +1,6 @@
 # Discourse
 
-{{< version "v2.13" >}}
+{{< g_version "v2.13" >}}
 
 This announcer enables posting new release messages to a
 [Discourse](https://discourse.org/) forum.
@@ -62,7 +62,7 @@ announce:
     category_id: 4
 ```
 
-{{< templates >}}
+{{< g_templates >}}
 
 ## Troubleshooting
 

@@ -2,7 +2,7 @@
 
 With GoReleaser Pro, you can split and merge `goreleaser release` runs.
 
-{{< featpro >}}
+{{< g_featpro >}}
 
 This feature can help in some areas:
 

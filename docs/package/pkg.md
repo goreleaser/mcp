@@ -1,7 +1,7 @@
 # macOS Pkg
 
-{{< featpro >}}
-{{< version "v2.14" >}}
+{{< g_featpro >}}
+{{< g_version "v2.14" >}}
 
 GoReleaser can create macOS `.pkg` installer files using `pkgbuild`.
 
@@ -74,5 +74,5 @@ pkgs:
     mod_timestamp: "{{ .CommitTimestamp }}"
 ```
 
-{{< templates >}}
+{{< g_templates >}}
 

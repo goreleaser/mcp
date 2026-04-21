@@ -1,7 +1,7 @@
 # App Bundles
 
-{{< featpro >}}
-{{< version "v2.4" >}}
+{{< g_featpro >}}
+{{< g_version "v2.4" >}}
 
 GoReleaser can create macOS App Bundles (a.k.a. `.app` files).
 
@@ -55,7 +55,7 @@ app_bundles:
     # You can use this to override the default generated 'Contents/Info.plist'
     # and/or to add more files.
     #
-    # {{< inline_version "v2.6" >}}
+    # {{< g_inline_version "v2.6" >}}
     # Templates: allowed.
     extra_files:
       - src: ./release/Info.plist
@@ -77,7 +77,7 @@ app_bundles:
     # and its results will be added to the archive.
     # and/or to add more files.
     #
-    # {{< inline_version "v2.6" >}}
+    # {{< g_inline_version "v2.6" >}}
     # Templates: allowed.
     # Extra template fields: `AppName`, `BinaryName`, and `Bundle`.
     templated_extra_files:
@@ -104,5 +104,5 @@ app_bundles:
    in `extra_files` and `templated_extra_files`, those are not used. You should
    get a warning if you do so.
 
-{{< templates >}}
+{{< g_templates >}}
 

@@ -1,6 +1,6 @@
 # DMG
 
-{{< featpro >}}
+{{< g_featpro >}}
 
 GoReleaser can create DMG images for macOS using `mkisofs` or `hdiutil`.
 
@@ -32,16 +32,16 @@ dmg:
     # - 'appbundle': app bundles
     #
     # Default: 'binary'
-    # {{< inline_pro >}}
-    # {{< inline_version "v2.4" >}}
+    # {{< g_inline_pro >}}
+    # {{< g_inline_version "v2.4" >}}
     use: appbundle
 
     # Allows to further filter the artifacts.
     #
     # Artifacts that do not match this expression will be ignored.
     #
-    # {{< inline_pro >}}
-    # {{< inline_version "v2.4" >}}
+    # {{< g_inline_pro >}}
+    # {{< g_inline_version "v2.4" >}}
     # Templates: allowed.
     if: '{{ eq .Os "linux" }}'
 
@@ -66,8 +66,8 @@ dmg:
     # and its results will be added to the image as it would with the
     # extra_files field above.
     #
-    # {{< inline_pro >}}
-    # {{< inline_version "v2.4" >}}
+    # {{< g_inline_pro >}}
+    # {{< g_inline_version "v2.4" >}}
     # Templates: allowed.
     templated_extra_files:
       - src: LICENSE.tpl
@@ -93,5 +93,5 @@ dmg:
    link inside the image might not work if the image was built on Windows.
 1. If running outside macOS, make sure to have `mkisofs` installed.
 
-{{< templates >}}
+{{< g_templates >}}
 

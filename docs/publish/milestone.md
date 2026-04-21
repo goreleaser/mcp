@@ -27,5 +27,5 @@ milestones:
     name_template: "Current Release"
 ```
 
-{{< templates >}}
+{{< g_templates >}}
 

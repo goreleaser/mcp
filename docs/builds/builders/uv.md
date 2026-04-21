@@ -1,6 +1,6 @@
 # UV
 
-{{< version "v2.9" >}}
+{{< g_version "v2.9" >}}
 
 You can now build Python `wheel` and `sdist` files using `uv build` and
 GoReleaser!

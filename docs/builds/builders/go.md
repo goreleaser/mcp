@@ -22,7 +22,7 @@ builds:
     # Path to main.go file or main package.
     # Notice: when used with `gomod.proxy`, this must be a package.
     # If you set it to a ellipsis path (e.g. './...'), GoReleaser will find all
-    # 'main' functions and build them all on a single command. {{< inline_version "v2.15" >}}
+    # 'main' functions and build them all on a single command. {{< g_inline_version "v2.15" >}}
     #
     # Default: `.`.
     main: ./cmd/my-app
@@ -143,7 +143,7 @@ builds:
     # and https://go.dev/wiki/MinimumRequirements#microarchitecture-support
     #
     # Default: [ 'v8.0' ].
-    # {{< inline_version "v2.4" >}}
+    # {{< g_inline_version "v2.4" >}}
     goarm64:
       - v9.0
 
@@ -152,7 +152,7 @@ builds:
     # and https://go.dev/wiki/MinimumRequirements#microarchitecture-support
     #
     # Default: [ 'hardfloat' ].
-    # {{< inline_version "v2.4" >}}
+    # {{< g_inline_version "v2.4" >}}
     gomips:
       - hardfloat
       - softfloat
@@ -162,7 +162,7 @@ builds:
     # and https://go.dev/wiki/MinimumRequirements#microarchitecture-support
     #
     # Default: [ 'sse2' ].
-    # {{< inline_version "v2.4" >}}
+    # {{< g_inline_version "v2.4" >}}
     go386:
       - sse2
       - softfloat
@@ -172,7 +172,7 @@ builds:
     # and https://go.dev/wiki/MinimumRequirements#microarchitecture-support
     #
     # Default: [ 'power8' ].
-    # {{< inline_version "v2.4" >}}
+    # {{< g_inline_version "v2.4" >}}
     goppc64:
       - power8
       - power9
@@ -182,7 +182,7 @@ builds:
     # and https://go.dev/wiki/MinimumRequirements#microarchitecture-support
     #
     # Default: [ 'rva20u64' ].
-    # {{< inline_version "v2.4" >}}
+    # {{< g_inline_version "v2.4" >}}
     goriscv64:
       - rva22u64
 
@@ -223,7 +223,7 @@ builds:
     #
     # Default: "go".
     # Templates: allowed.
-    # {{< inline_version "v2.5" >}}
+    # {{< g_inline_version "v2.5" >}}
     tool: "go1.13.4"
 
     # Sets the command to run to build.
@@ -252,7 +252,7 @@ builds:
     # If true, skip the build.
     # Useful for library projects.
     #
-    # Templates: allowed ({{< inline_version "v2.3" >}})
+    # Templates: allowed ({{< g_inline_version "v2.3" >}})
     skip: false
 
     # By default, GoReleaser will create your binaries inside
@@ -265,7 +265,7 @@ builds:
     # If you do, you are responsible for keeping different builds from
     # overriding each other.
     #
-    # Templates: allowed ({{< inline_version "v2.3" >}})
+    # Templates: allowed ({{< g_inline_version "v2.3" >}})
     no_unique_dist_dir: true
 
     # By default, GoReleaser will check if the main filepath has a main
@@ -335,7 +335,7 @@ builds:
 > This includes the `_{goamd64}` suffix, as well as the other
 > GOARCH-specific values.
 
-{{< templates >}}
+{{< g_templates >}}
 
 > [!NOTE]
 > First-class build targets are gathered by running:
@@ -535,7 +535,7 @@ builds:
 
 ## Building ellipsis paths
 
-{{< version "v2.15" >}}
+{{< g_version "v2.15" >}}
 
 You can also set the `main` to an ellipsis import path, e.g. `./...`.
 
@@ -547,5 +547,5 @@ Binary names will be inferred just like `go build` does.
 If you have multiple build configurations that change only the `main` and
 `binary` portions, this might be your friend.
 
-{{< templates >}}
+{{< g_templates >}}
 

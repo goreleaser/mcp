@@ -26,7 +26,7 @@ before:
 {{< /tab >}}
 {{< tab "Pro" >}}
 
-{{< featpro >}}
+{{< g_featpro >}}
 
 The `before` section allows for global hooks that will be executed
 **before** the release is started. Likewise, the `after` section allows for
@@ -55,7 +55,7 @@ before:
         - "FILE_TO_TOUCH=something-{{ .ProjectName }}" # specify hook level environment variables
     - cmd: "dotnet tool install --global wix"
       # Make the hook optional:
-      # {{< inline_version "v2.7" >}}
+      # {{< g_inline_version "v2.7" >}}
       if: '{{ eq .Runtime.Goos "windows" }}'
 
 # global after hooks
@@ -85,5 +85,5 @@ If you need to do anything more complex, it is recommended to create a shell
 script and call it instead. You can also go crazy with `sh -c "my commands"`,
 but it gets ugly really fast.
 
-{{< templates >}}
+{{< g_templates >}}
 

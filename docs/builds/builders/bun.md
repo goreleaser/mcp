@@ -1,6 +1,6 @@
 # Bun
 
-{{< version "v2.6" >}}
+{{< g_version "v2.6" >}}
 
 You can now build TypeScript binaries using `bun build --compile` and GoReleaser!
 
@@ -106,5 +106,5 @@ Modern/Baseline bit as `.Type`.
     GoReleaser will error if you try to use them. Give it a try with
     `goreleaser r --snapshot --clean`.
 
-{{< templates >}}
+{{< g_templates >}}
 

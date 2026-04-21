@@ -1,6 +1,6 @@
 # DockerHub
 
-{{< featpro >}}
+{{< g_featpro >}}
 
 DockerHub allows you to set an image description and a full description.
 However, this is not possible via `docker push`.
@@ -65,5 +65,5 @@ dockerhub:
         path: ./README.md
 ```
 
-{{< templates >}}
+{{< g_templates >}}
 

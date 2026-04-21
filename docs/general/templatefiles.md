@@ -1,6 +1,6 @@
 # Template Files
 
-{{< featpro >}}
+{{< g_featpro >}}
 
 Template Files allow you to create custom files and/or scripts using
 GoReleaser's internal state and template variables, for example, an installer
@@ -34,5 +34,5 @@ template_files:
     mode: 0755
 ```
 
-{{< templates >}}
+{{< g_templates >}}
 

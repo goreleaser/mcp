@@ -106,13 +106,13 @@ nix:
     # Format the generated file.
     # Valid options: 'nixfmt', 'alejandra'.
     #
-    # {{< inline_version "v2.14" >}}
+    # {{< g_inline_version "v2.14" >}}
     formatter: nixfmt
 
-{{% include file="includes/repository.md" %}}
+{{% g_include file="includes/repository.md" %}}
 ```
 
-{{< templates >}}
+{{< g_templates >}}
 
 ## Things not supported
 
@@ -156,5 +156,5 @@ That's it!
 
 [nur]: https://github.com/nix-community/NUR
 
-{{% include file="includes/prs.md" %}}
+{{% g_include file="includes/prs.md" %}}
 

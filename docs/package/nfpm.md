@@ -28,7 +28,7 @@ nfpms:
 
     # IDs of the builds which should be archived in this package.
     #
-    # {{< inline_version "v2.8" >}} (use 'builds' in previous versions)
+    # {{< g_inline_version "v2.8" >}} (use 'builds' in previous versions)
     # Default: empty (include all).
     ids:
       - foo
@@ -38,8 +38,8 @@ nfpms:
     #
     # Artifacts that do not match this expression will be ignored.
     #
-    # {{< inline_pro >}}
-    # {{< inline_version "v2.4" >}}
+    # {{< g_inline_pro >}}
+    # {{< g_inline_version "v2.4" >}}
     # Templates: allowed.
     if: '{{ eq .Os "linux" }}'
 
@@ -179,7 +179,7 @@ nfpms:
     # Generally, most people don't build for more than one GOAMD64, so probably
     # you don't need to worry about this.
     #
-    # {{< inline_version "v2.14" >}}
+    # {{< g_inline_version "v2.14" >}}
     goamd64:
       - v1
       - v3
@@ -209,17 +209,17 @@ nfpms:
           mode: 0644
           # Modification time.
           #
-          # Templates: allowed. {{< inline_version "v2.6" >}}
+          # Templates: allowed. {{< g_inline_version "v2.6" >}}
           mtime: "{{.CommitDate}}"
 
           # Owner name.
           #
-          # Templates: allowed. {{< inline_version "v2.6" >}}
+          # Templates: allowed. {{< g_inline_version "v2.6" >}}
           owner: notRoot
 
           # Group name.
           #
-          # Templates: allowed. {{< inline_version "v2.6" >}}
+          # Templates: allowed. {{< g_inline_version "v2.6" >}}
           group: notRoot
 
       # Simple config file
@@ -296,16 +296,16 @@ nfpms:
           mode: 0644
           # Modification time.
           #
-          # Templates: allowed. {{< inline_version "v2.6" >}}
+          # Templates: allowed. {{< g_inline_version "v2.6" >}}
           mtime: "{{.CommitDate}}"
 
           # Owner name.
           #
-          # Templates: allowed. {{< inline_version "v2.6" >}}
+          # Templates: allowed. {{< g_inline_version "v2.6" >}}
           owner: notRoot
 
           # Group name.
-          # Templates: allowed. {{< inline_version "v2.6" >}}
+          # Templates: allowed. {{< g_inline_version "v2.6" >}}
           #
           group: notRoot
 
@@ -357,7 +357,7 @@ nfpms:
     # Date to be used as mtime for the package itself, and its internal files.
     # You may also want to set the mtime on its contents.
     #
-    # {{< inline_version "v2.6" >}}
+    # {{< g_inline_version "v2.6" >}}
     # Templates: allowed.
     mtime: "{{ .CommitDate }}"
 
@@ -408,7 +408,7 @@ nfpms:
       # The hostname of the machine the rpm was built with.
       #
       # Default: os.Hostname()
-      # {{< inline_version "v2.10" >}}
+      # {{< g_inline_version "v2.10" >}}
       buildhost: foo.bar
 
       # Compression algorithm (gzip (default), lzma or xz).
@@ -462,7 +462,7 @@ nfpms:
 
       # Data compression algorithm (gzip (default), xz, zstd or none).
       #
-      # {{< inline_version "v2.14" >}}
+      # {{< g_inline_version "v2.14" >}}
       compression: zstd
 
       # The package is signed if a key_file is set
@@ -535,7 +535,7 @@ nfpms:
 
     # Custom configuration applied only to the IPK packager.
     #
-    # {{< inline_version "v2.1" >}}
+    # {{< g_inline_version "v2.1" >}}
     ipk:
       # The ABI version to specify.
       #
@@ -588,7 +588,7 @@ nfpms:
         - foo
 ```
 
-{{< templates >}}
+{{< g_templates >}}
 
 > [!NOTE]
 > Fields marked with "overridable" can be overridden for any format.

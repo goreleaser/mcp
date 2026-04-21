@@ -1,8 +1,8 @@
 # Cloudsmith - apt, rpm, and alpine repositories
 
-{{< version "v2.1" >}}
+{{< g_version "v2.1" >}}
 
-{{< featpro >}}
+{{< g_featpro >}}
 
 You can easily create `deb`, `alpine`, and `yum` repositories on
 [Cloudsmith][cloudsmith] using GoReleaser.
@@ -77,25 +77,25 @@ cloudsmiths:
       alpine: "alpine/v3.8"
       # You can also set multiple distributions for a format.
       #
-      # {{< inline_version "v2.8" >}}
+      # {{< g_inline_version "v2.8" >}}
       deb:
       - "ubuntu/xenial"
       - "ubuntu/focal"
 
     # The component (channel) for the package (e.g. 'main', 'unstable', etc).
-    # {{< inline_version "v2.7" >}}
+    # {{< g_inline_version "v2.7" >}}
     component: main
 
     # If true, the uploaded package will overwrite any others with the same
     # attributes (e.g. same version); otherwise, it will be flagged as a
     # duplicate.
     #
-    # {{< inline_version "v2.11" >}}
+    # {{< g_inline_version "v2.11" >}}
     # Templates: allowed.
     republish: true
 ```
 
 [cloudsmith]: https://cloudsmith.io/
 
-{{< templates >}}
+{{< g_templates >}}
 

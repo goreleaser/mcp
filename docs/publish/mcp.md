@@ -1,8 +1,8 @@
 # Model Context Protocol (MCP) Server Registry
 
-{{< version "v2.13" >}}
+{{< g_version "v2.13" >}}
 
-{{< experimental "https://github.com/orgs/goreleaser/discussions/6251" >}}
+{{< g_experimental "https://github.com/orgs/goreleaser/discussions/6251" >}}
 
 After building your binaries, GoReleaser can generate and publish a Model
 Context Protocol (MCP) server manifest file (`server.json`) to the
@@ -147,7 +147,7 @@ mcp:
 >     # ...
 > ```
 
-{{< templates >}}
+{{< g_templates >}}
 
 ## How it works
 

@@ -1,6 +1,6 @@
 # Source RPMs
 
-{{< version "v2.15" >}}
+{{< g_version "v2.15" >}}
 
 GoReleaser can generate Source RPM (`.src.rpm`) packages.
 

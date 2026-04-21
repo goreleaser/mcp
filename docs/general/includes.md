@@ -1,6 +1,6 @@
 # Includes
 
-{{< featpro >}}
+{{< g_featpro >}}
 
 GoReleaser allows you to reuse configuration files by including them from either
 a URL or a file path.

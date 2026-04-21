@@ -20,9 +20,11 @@ git:
   # This means that GoReleaser will not pick up tags that match any of the
   # provided values as either previous or current tags.
   #
+  # Glob patterns are supported. {{< g_inline_version "v2.15.4" >}} {{< g_inline_pro >}}
   # Templates: allowed.
   ignore_tags:
     - nightly
+    - "*-nightly"
     - "{{.Env.IGNORE_TAG}}"
 
   # Tags that begin with these prefixes will be ignored.
@@ -36,7 +38,7 @@ git:
 
 ## SemVer sorting
 
-{{< featpro >}}
+{{< g_featpro >}}
 
 This allows you to sort tags by semver:
 
@@ -53,11 +55,11 @@ which is different from what other git sorting options might give you.
 
 ## Smart semver sorting
 
-{{< version "v2.12" >}}
+{{< g_version "v2.12" >}}
 
-{{< experimental >}}
+{{< g_experimental >}}
 
-{{< featpro >}}
+{{< g_featpro >}}
 
 Like semver sorting, but smarter: if the current version is not a pre-release,
 it'll search for previous tags that are not pre-releases.

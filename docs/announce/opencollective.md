@@ -11,7 +11,7 @@ announce:
   opencollective:
     # Whether its enabled or not.
     #
-    # Templates: allowed. {{< inline_version "v2.6" >}}
+    # Templates: allowed. {{< g_inline_version "v2.6" >}}
     enabled: true
 
     # Collective slug
@@ -31,5 +31,5 @@ announce:
     message_template: "Awesome project {{.Tag}} is out!"
 ```
 
-{{< templates >}}
+{{< g_templates >}}
 

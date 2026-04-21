@@ -21,5 +21,5 @@ underlying builds (using `go build`) will have `FOO` set to `on`.
 
 The root `env` section also accepts templates.
 
-{{< templates >}}
+{{< g_templates >}}
 

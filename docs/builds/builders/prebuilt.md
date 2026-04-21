@@ -1,6 +1,6 @@
 # Import pre-built binaries
 
-{{< featpro >}}
+{{< g_featpro >}}
 
 It is also possible to import pre-built binaries into the GoReleaser lifecycle.
 
