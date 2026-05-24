@@ -2,7 +2,7 @@
 
 {{< g_version "v2.12" >}}
 
-{{< g_experimental "https://github.com/orgs/goreleaser/discussions/6005" >}}
+{{< g_experimental "https://github.com/goreleaser/goreleaser/discussions/6005" >}}
 
 This feature uses `docker buildx` to build multi-arch manifests,
 reusing the previously built binaries and/or packages.
@@ -73,12 +73,8 @@ dockers_v2:
     #
     # Templates: allowed.
     labels:
-      "org.opencontainers.image.description": "My software"
-      "org.opencontainers.image.created": "{{.Date}}"
-      "org.opencontainers.image.name": "{{.ProjectName}}"
-      "org.opencontainers.image.revision": "{{.FullCommit}}"
-      "org.opencontainers.image.version": "{{.Version}}"
-      "org.opencontainers.image.source": "{{.GitURL}}"
+      "foo": "bar"
+      "project": "{{.ProjectName}}"
 
     # Annotations to be added to the image.
     #
@@ -86,8 +82,16 @@ dockers_v2:
     #
     # Templates: allowed.
     annotations:
-      "foo": "bar"
-      "project": "{{.ProjectName}}"
+      "org.opencontainers.image.description": "My software"
+      "org.opencontainers.image.created": "{{.Date}}"
+      "org.opencontainers.image.name": "{{.ProjectName}}"
+      "org.opencontainers.image.revision": "{{.FullCommit}}"
+      "org.opencontainers.image.version": "{{.Version}}"
+      "org.opencontainers.image.source": "{{.GitURL}}"
+
+      # You can also use `.BaseImage` and `.BaseImageDigest`. {{< g_inline_version "v2.16" >}}
+      "org.opencontainers.image.base.name": "{{.BaseImage}}"
+      "org.opencontainers.image.base.digest": "{{.BaseImageDigest}}"
 
     # Platforms to build.
     #
@@ -124,6 +128,31 @@ dockers_v2:
     # Templates: allowed.
     flags:
       - "--ulimit=10"
+
+    # Custom hooks run around the actual `docker buildx build` invocation.
+    # Hooks receive the resolved configuration via templates, so they can
+    # inspect or operate on the image plan that's about to be built.
+    #
+    # Available extra template fields:
+    #   - .Dockerfile: the resolved path to the Dockerfile.
+    #   - .Images:     the compiled `image:tag` list for this build.
+    #   - .ContextDir: the temporary build context directory.
+    #   - .Digest:     the resulting image digest (post hook only).
+    #
+    # {{< g_inline_version "v2.16" >}}
+    hooks:
+      pre:
+        - cmd: ./scripts/before-docker.sh
+          # Working directory for the command.
+          dir: "{{ .ContextDir }}"
+          # Extra env vars to inject into the hook.
+          env:
+            - DOCKERFILE={{ .Dockerfile }}
+          # Whether to stream the command output to stdout/stderr.
+          output: true
+      post:
+        - cmd: ./scripts/after-docker.sh {{ .Digest }} {{ range .Images }}{{ . }} {{ end }}
+          output: true
 
     # Retry configuration.
     retry:

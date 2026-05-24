@@ -1,6 +1,6 @@
 # Retries
 
-{{< g_version "v2.15.3-unreleased" >}}
+{{< g_version "v2.15.3" >}}
 
 Most external service calls go through a retry mechanism with exponential
 back-off on failures deemed _retriable_.
