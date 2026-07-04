@@ -5,7 +5,7 @@ go 1.25.3
 require (
 	github.com/caarlos0/go-version v0.2.2
 	github.com/charmbracelet/fang v1.0.0
-	github.com/goreleaser/goreleaser-pro/v2 v2.16.0
+	github.com/goreleaser/goreleaser-pro/v2 v2.17.0
 	github.com/modelcontextprotocol/go-sdk v1.6.1
 	github.com/spf13/cobra v1.10.2
 	github.com/stretchr/testify v1.11.1
