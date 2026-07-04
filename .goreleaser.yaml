@@ -94,6 +94,7 @@ homebrew_casks:
     repository:
       owner: goreleaser
       name: homebrew-tap
+      token: "{{ .Env.GH_PAT }}"
     url:
       verified: github.com/goreleaser/mcp/releases/download
 
@@ -103,6 +104,7 @@ winget:
     repository:
       owner: goreleaser
       name: winget-pkgs
+      token: "{{ .Env.GH_PAT }}"
       branch: "mcp-{{.Version}}"
       pull_request:
         enabled: true
