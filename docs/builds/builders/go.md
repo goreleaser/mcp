@@ -16,7 +16,7 @@ builds:
   - #
     # ID of the build.
     #
-    # Default: Project directory name.
+    # Default: Project name.
     id: "my-build"
 
     # Path to main.go file or main package.
@@ -30,7 +30,7 @@ builds:
     # Binary name.
     # Can be a path (e.g. `bin/app`) to wrap the binary in a directory.
     #
-    # Default: Project directory name.
+    # Default: Project name.
     binary: program
 
     # Custom flags.
@@ -124,7 +124,7 @@ builds:
     # For more info refer to: https://pkg.go.dev/cmd/go#hdr-Environment_variables
     # and https://go.dev/wiki/MinimumRequirements#microarchitecture-support
     #
-    # You can also select the floating-point ABI explicitly (since Go 1.22): {{< g_inline_version "v2.17-unreleased" >}}
+    # You can also select the floating-point ABI explicitly (since Go 1.22): {{< g_inline_version "v2.17" >}}
     #   - 6,softfloat
     #   - 6,hardfloat
     #   - 7,softfloat
@@ -298,7 +298,8 @@ builds:
     dir: go
 
     # Builder allows you to use a different build implementation.
-    # Valid options are: `go`, `rust`, `zig`, and `prebuilt` (pro-only).
+    # Valid options are: `go`, `rust`, `zig`, `bun`, `deno`, `node`, `uv`,
+    # `poetry`, and `prebuilt` (pro-only).
     #
     # Default: 'go'.
     builder: prebuilt

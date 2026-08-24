@@ -49,7 +49,7 @@ In fields that support templates, these fields are usually available:
 | `.Runtime.Goos`    | equivalent to `runtime.GOOS`                                                                               |
 | `.Runtime.Goarch`  | equivalent to `runtime.GOARCH`                                                                             |
 | `.Outputs`         | custom outputs {{< g_inline_version "v2.11" >}}                                                            |
-| `.Dist`            | the absolute path to the configured `dist` directory {{< g_inline_version "v2.17-unreleased" >}}           |
+| `.Dist`            | the absolute path to the configured `dist` directory {{< g_inline_version "v2.17" >}}                      |
 
 The exception is that any of the Git-related fields will no be available in the
 `env` section.
@@ -98,10 +98,9 @@ You should be able to use all its fields on each item:
 - `.Goos`
 - `.Goarch`
 - `.Goarm`
-- `.Gomips`
+- `.Gomips` (also holds `GOMIPS64` on 64-bit targets)
 - `.Goamd64`
 - `.Goarm64` {{< g_inline_version "v2.4" >}}
-- `.Gomips64` {{< g_inline_version "v2.4" >}}
 - `.Goppc64` {{< g_inline_version "v2.4" >}}
 - `.Goriscv64` {{< g_inline_version "v2.4" >}}
 - `.Go386` {{< g_inline_version "v2.4" >}}
@@ -119,10 +118,9 @@ may have some extra fields:
 | `.Os`           | `GOOS`                                                          |
 | `.Arch`         | `GOARCH`                                                        |
 | `.Arm`          | `GOARM`                                                         |
-| `.Mips`         | `GOMIPS`                                                        |
+| `.Mips`         | `GOMIPS`, and `GOMIPS64` on 64-bit targets                       |
 | `.Amd64`        | `GOAMD64`                                                       |
 | `.Arm64`        | `GOARM64` {{< g_inline_version "v2.4" >}}                       |
-| `.Mips64`       | `GOMIPS64` {{< g_inline_version "v2.4" >}}                      |
 | `.Ppc64`        | `GOPPC64` {{< g_inline_version "v2.4" >}}                       |
 | `.Riscv64`      | `GORISCV64` {{< g_inline_version "v2.4" >}}                     |
 | `.I386`         | `GO386` {{< g_inline_version "v2.4" >}}                         |
@@ -172,6 +170,7 @@ On all fields, you have these available functions:
 | `dir .Path`                       | returns all but the last element of path, typically the path's directory. See [Dir](https://pkg.go.dev/path/filepath#Dir)         |
 | `base .Path`                      | returns the last element of path. See [Base](https://pkg.go.dev/path/filepath#Base)                                               |
 | `abs .ArtifactPath`               | returns an absolute representation of path. See [Abs](https://pkg.go.dev/path/filepath#Abs)                                       |
+| `join "a" "b"`                    | joins any number of path elements into a single path. See [Join](https://pkg.go.dev/path/filepath#Join)                          |
 | `filter "text" "regex"`           | keeps only the lines matching the given regex, analogous to `grep -E`                                                             |
 | `reverseFilter "text" "regex"`    | keeps only the lines **not** matching the given regex, analogous to `grep -vE`                                                    |
 | `title "foo"`                     | "titlenize" the string using english as language. See [Title](https://pkg.go.dev/golang.org/x/text/cases#Title)                   |
@@ -199,7 +198,7 @@ On all fields, you have these available functions:
 | `sha3_256 .ArtifactPath`          | `sha3_256` checksum of the artifact. See [SHA3-256](https://pkg.go.dev/golang.org/x/crypto/sha3) {{< g_inline_version "v2.9" >}}  |
 | `sha3_512 .ArtifactPath`          | `sha3_512` checksum of the artifact. See [SHA3-512](https://pkg.go.dev/golang.org/x/crypto/sha3) {{< g_inline_version "v2.9" >}}  |
 | `mustReadFile "/foo/bar.txt"`     | reads the file contents or fails if it can't be read {{< g_inline_version "v2.12" >}}                                             |
-| `readFile "/foo/bar.txt"`         | reads the file contents if it it can be read, or return empty string {{< g_inline_version "v2.12" >}}                             |
+| `readFile "/foo/bar.txt"`         | reads the file contents if it can be read, or return empty string {{< g_inline_version "v2.12" >}}                                |
 | `englishJoin`                     | will join multiple items in english {{< g_inline_version "v2.14" >}}                                                              |
 | `list "a" "b" "c"`                | makes a list of strings                                                                                                           |
 
@@ -211,7 +210,7 @@ On all fields, you have these available functions:
 | --------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
 | `in (list "a" "b" "c") "b"`             | checks if a slice contains a value                                                                                                                                                                                                         |
 | `reReplaceAll "(.*)" "foo" "bar-$1"`    | compiles the first argument with [`regexp.Compile`](https://pkg.go.dev/regexp#Compile), then uses [`ReplaceAllString`](https://pkg.go.dev/regexp#Regexp.ReplaceAllStringFunc) with the following arguments {{< g_inline_version "v2.8" >}} |
-| `list "a" "b" "c" \| listExclude "^a$"` | removes items matching the given regular expression from a list {{< g_inline_version "v2.16" >}}                                                                                                                                |
+| `list "a" "b" "c" \| listExclude "^a$"` | removes items matching the given regular expression from a list {{< g_inline_version "v2.16" >}}                                                                                                                                           |
 
 With all those fields, you may be able to compose the name of your artifacts
 pretty much the way you want:

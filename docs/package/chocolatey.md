@@ -22,6 +22,8 @@ chocolateys:
     # IDs of the archives to use.
     # Empty means all IDs.
     # Attention: archives must not be in the 'binary' format.
+    # A package can only have one archive per architecture, so if your build
+    # produces several Windows archives for the same GOARCH, filter them here.
     ids:
       - foo
       - bar
@@ -95,10 +97,14 @@ chocolateys:
     tags: "foo bar baz"
 
     # Your app's summary:
+    #
+    # Templates: allowed.
     summary: Software to create fast and easy drum rolls.
 
     # This the description of your Chocolatey package.
     # Supports markdown.
+    #
+    # Templates: allowed.
     description: |
       {{ .ProjectName }} installer package.
       Software to create fast and easy drum rolls.
@@ -108,6 +114,8 @@ chocolateys:
     # Supports markdown. To prevent the need to continually update this field,
     # providing a URL to an external list of Release Notes is perfectly
     # acceptable.
+    #
+    # Templates: allowed.
     release_notes: "https://github.com/foo/bar/releases/tag/v{{ .Version }}"
 
     # App's dependencies
@@ -119,6 +127,7 @@ chocolateys:
     # The API key that should be used to push to the Chocolatey repository.
     #
     # WARNING: do not expose your api key in the configuration file!
+    # Templates: allowed.
     api_key: "{{ .Env.CHOCOLATEY_API_KEY }}"
 
     # The source repository that will push the package to.

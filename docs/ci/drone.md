@@ -95,12 +95,12 @@ pipeline:
     tags: true
 
   test:
-    image: golang:1.10
+    image: golang:1.27
     commands:
       - go test ./... -race
 
   release:
-    image: golang:1.10
+    image: golang:1.27
     secrets: [github_token]
     commands:
       curl -sfL https://goreleaser.com/static/run | bash

@@ -54,16 +54,19 @@ nfpms:
     # Your app's homepage.
     #
     # Default: inferred from global metadata.
+    # Templates: allowed.
     homepage: https://example.com/
 
     # Your app's maintainer (probably you).
     #
     # Default: inferred from global metadata.
+    # Templates: allowed.
     maintainer: Drummer <drum-roll@example.com>
 
     # Your app's description.
     #
     # Default: inferred from global metadata.
+    # Templates: allowed.
     description: |-
       Drum rolls installer package.
       Software to create fast and easy drum rolls.
@@ -123,6 +126,7 @@ nfpms:
     # package root.
     #
     # Default: '/usr/bin'.
+    # Templates: allowed.
     bindir: /usr/bin
 
     # Paths to the directories where to put specific types of libraries that
@@ -201,6 +205,11 @@ nfpms:
       # Basic file that applies to all packagers
       - src: path/to/foo
         dst: /usr/bin/foo
+
+        # Expand matching globs into individual files.
+        #
+        # Default: false.
+        expand: false
 
       # This will add all files in some/directory or in subdirectories at the
       # same level under the directory /etc. This means the tree structure in
@@ -453,16 +462,35 @@ nfpms:
         # Deb templates file, when using debconf.
         templates: templates
 
+        # Deb config script, when using debconf.
+        config: config
+
       # Custom deb triggers
       triggers:
         # register interest on a trigger activated by another package
-        # (also available: interest_await, interest_noawait)
         interest:
           - some-trigger-name
 
+        # register interest on a trigger activated by another package and await
+        # processing.
+        interest_await:
+          - some-trigger-name
+
+        # register interest on a trigger activated by another package without
+        # awaiting processing.
+        interest_noawait:
+          - some-trigger-name
+
         # activate a trigger for another package
-        # (also available: activate_await, activate_noawait)
         activate:
+          - another-trigger-name
+
+        # activate a trigger for another package and await processing.
+        activate_await:
+          - another-trigger-name
+
+        # activate a trigger for another package without awaiting processing.
+        activate_noawait:
           - another-trigger-name
 
       # Packages which would break if this package would be installed.
@@ -570,7 +598,7 @@ nfpms:
       # Mark the package to be auto installed.
       #
       # Default: false
-      auto_install: false
+      auto_installed: false
 
       # Mark the package as essential.
       #
@@ -607,7 +635,7 @@ nfpms:
     # package, so the `executable` of each application below is simply the
     # binary's file name.
     #
-    # {{< g_inline_version "v2.17-unreleased" >}}
+    # {{< g_inline_version "v2.17" >}}
     msix:
       # The publisher identity. Must match the subject of the signing
       # certificate. Required.
@@ -729,7 +757,7 @@ will be set `$NFPM_DEFAULT_DEB_PASSPHRASE`. GoReleaser will try that, then
 
 ## A note about MSIX
 
-{{< g_version "v2.17-unreleased" >}}
+{{< g_version "v2.17" >}}
 
 {{< g_experimental "https://github.com/goreleaser/goreleaser/issues/6519" >}}
 
@@ -782,7 +810,7 @@ Termux is the same format as `deb`, the differences are:
 
 ```yaml {filename=".goreleaser.yaml"}
 nfpms:
-  - formats: [deb termux.deb rpm]
+  - formats: [deb, termux.deb, rpm]
     contents:
       - src: ./foo.conf
         dst: '{{ if eq .Format "termux.deb" }}/data/data/com.termux/files{{ end }}/usr/share/foo.conf'

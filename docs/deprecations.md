@@ -235,6 +235,24 @@ Then, instead of building the images, pushing them, and then building the
 manifests and pushing them, we will now run a single `docker buildx build` with
 the given platforms, which will build and publish the manifest and SBOM.
 
+> [!IMPORTANT]
+> **Images are now built in the publish phase**
+>
+> Since `docker buildx` can't create a multi-platform manifest locally without
+> pushing it, building and pushing became a single step, which runs in the
+> **publish** phase.
+>
+> This means that commands that skip publishing — `goreleaser build`,
+> `goreleaser release --skip=publish`, and, on Pro, `goreleaser release` with
+> `--prepare`, `--split`, or `--single-target` — will not build your images
+> anymore. They'll be built and pushed later, by `goreleaser publish`,
+> `goreleaser continue`, or `goreleaser continue --merge`.
+>
+> To build the images without pushing them, run a snapshot build, e.g.
+> `goreleaser release --snapshot`. See
+> [testing locally](/customization/package/dockers_v2/#testing-locally) for
+> details.
+
 {{< tabs >}}
 {{< tab "Before" >}}
 
@@ -769,6 +787,31 @@ snapshot:
 {{< /tab >}}
 {{< /tabs >}}
 
+### nfpms.maintainer
+
+> since 2022-05-07 (v1.9.0)
+
+nFPM will soon make mandatory setting the maintainer field.
+
+{{< tabs >}}
+{{< tab "Before" >}}
+
+```yaml
+nfpms:
+  - maintainer: ""
+```
+
+{{< /tab >}}
+{{< tab "After" >}}
+
+```yaml
+nfpms:
+  - maintainer: "Name <email>"
+```
+
+{{< /tab >}}
+{{< /tabs >}}
+
 ## Removed in v2
 
 ### archives.strip_parent_binary_folder
@@ -1253,31 +1296,6 @@ goreleaser release --rm-dist
 
 ```bash
 goreleaser release --clean
-```
-
-{{< /tab >}}
-{{< /tabs >}}
-
-### nfpms.maintainer
-
-> since 2022-05-07 (v1.9.0), removed 2024-05-26 (v2.0)
-
-nFPM will soon make mandatory setting the maintainer field.
-
-{{< tabs >}}
-{{< tab "Before" >}}
-
-```yaml
-nfpms:
-  - maintainer: ""
-```
-
-{{< /tab >}}
-{{< tab "After" >}}
-
-```yaml
-nfpms:
-  - maintainer: "Name <email>"
 ```
 
 {{< /tab >}}
