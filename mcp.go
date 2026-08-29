@@ -105,7 +105,7 @@ var cmd = &cobra.Command{
 			return err
 		}
 
-		return server.Run(cmd.Context(), &mcp.StdioTransport{})
+		return server.Run(cmd.Context(), stdioTransport())
 	},
 }
 
