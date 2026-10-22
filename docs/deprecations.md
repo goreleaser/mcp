@@ -48,7 +48,7 @@ foo: bar
 
 ### homebrew_casks.hooks.pre.install
 
-> since v2.19-unreleased
+> since v2.19
 
 [Homebrew deprecated the `preflight` stanza](https://github.com/Homebrew/brew/pull/23366)
 in favor of `preflight_steps`.
@@ -84,7 +84,7 @@ homebrew_casks:
 
 ### homebrew_casks.hooks.post.install
 
-> since v2.19-unreleased
+> since v2.19
 
 Same as [`homebrew_casks.hooks.pre.install`](#homebrew_caskshookspreinstall), for
 the `postflight` stanza, which becomes `postflight_steps`.
@@ -116,7 +116,7 @@ homebrew_casks:
 
 ### homebrew_casks.hooks.pre.uninstall
 
-> since v2.19-unreleased
+> since v2.19
 
 Same as [`homebrew_casks.hooks.pre.install`](#homebrew_caskshookspreinstall), for
 the `uninstall_preflight` stanza, which becomes `uninstall_preflight_steps`.
@@ -148,7 +148,7 @@ homebrew_casks:
 
 ### homebrew_casks.hooks.post.uninstall
 
-> since v2.19-unreleased
+> since v2.19
 
 Same as [`homebrew_casks.hooks.pre.install`](#homebrew_caskshookspreinstall), for
 the `uninstall_postflight` stanza, which becomes `uninstall_postflight_steps`.
