@@ -1,14 +1,15 @@
 # Winget
 
 After releasing to GitHub, GitLab, or Gitea, GoReleaser can generate and publish
-a _winget manifest_ and commit to a git repository, and PR it to `winget-pkgs`
-if instructed to.
+a _winget manifest_ and commit to a git repository, and open a pull request to
+`winget-pkgs` if instructed to.
 
 The `winget` section specifies how the **manifests** should be created:
 
 ```yaml {filename=".goreleaser.yaml"}
 winget:
-  - # Name of the recipe
+  - # Name of the recipe.
+    # It is also used as the artifact ID, so it must be unique.
     #
     # Default: the project name.
     # Templates: allowed.
@@ -52,7 +53,8 @@ winget:
 
     # Package identifier.
     #
-    # Default: the project name.
+    # Default: publisher with spaces removed, followed by a dot and the
+    # configured package name (e.g. 'FooInc.myproject').
     # Templates: allowed.
     package_identifier: myproject.myproject
 

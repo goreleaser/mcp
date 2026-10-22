@@ -1,12 +1,11 @@
 # Build Hooks
 
-Both pre and post hooks are run **for each build target**, regardless of whether
-these targets are generated via a matrix of OSes and architectures or defined
-explicitly in `targets`, regardless of `builder`.
+Both pre and post hooks run **for each build target**, whether the targets come
+from a matrix of operating systems and architectures or are listed explicitly in
+`targets`, and regardless of the `builder`.
 
-In addition to simple declarations as shown above _multiple_ hooks can be
-declared to help retaining reusability of configuration between different build
-environments.
+In addition to simple declarations, you can declare _multiple_ hooks to reuse
+configuration between different build environments.
 
 ```yaml {filename=".goreleaser.yaml"}
 builds:
@@ -36,9 +35,8 @@ builds:
     hooks:
       pre:
         - cmd: first-script.sh
-          dir:
-            "{{ dir .Dist}}"
-            # Always print command output, otherwise only visible in debug mode.
+          dir: .
+          # Always print command output, otherwise only visible in debug mode.
           output: true
           env:
             - HOOK_SPECIFIC_VAR={{ .Env.GLOBAL_VAR }}
@@ -46,8 +44,8 @@ builds:
 ```
 
 All properties of a hook (`cmd`, `dir` and `env`) support
-[templating](/customization/general/templates/) with `post` hooks having binary artifact
-available (as these run _after_ the build).
+[templating](/customization/general/templates/) with `post` hooks having the
+binary artifact available (as these run _after_ the build).
 Additionally the following build details are exposed to both `pre` and `post`
 hooks:
 

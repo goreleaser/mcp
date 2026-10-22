@@ -45,7 +45,7 @@ source:
       strip_parent: true
 
       # File info.
-      # Not all fields are supported by all formats available formats.
+      # Not all fields are supported by all available formats.
       # Default: file info of the source file.
       info:
         # Templates: allowed.

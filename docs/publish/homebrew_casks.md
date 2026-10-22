@@ -113,10 +113,6 @@ homebrew_casks:
       # Templates: allowed.
       template: "https://github.mycompany.com/foo/bar/releases/download/{{ .Tag }}/{{ .ArtifactName }}"
 
-      # Used when the domains of `url` and `homepage` differ.
-      # Templates: allowed.
-      verified: "github.com/owner/repo/"
-
       # Download strategy or format specification
       # See official Cask Cookbook for allowed values.
       # Templates: allowed.
@@ -190,6 +186,7 @@ homebrew_casks:
       ...
 
     # Dependencies for the cask.
+    # Each group is sorted by name without regard to case, preserving the original names.
     dependencies:
       - cask: some-cask
       - formula: some-formula
@@ -200,18 +197,32 @@ homebrew_casks:
 
     # Hooks for the cask lifecycle.
     #
+    # The body of each `_steps` option uses Homebrew's declarative install
+    # steps DSL. It is not arbitrary Ruby.
+    # See https://docs.brew.sh/Cask-Cookbook for the allowed steps.
+    #
+    # Use `{{ .StagedPath }}` and `{{ .AppDir }}` for Homebrew's own
+    # `staged_path` and `appdir` tokens.
+    #
+    # The `install` and `uninstall` options are deprecated. If you set both
+    # `install` and `install_steps`, `install_steps` wins, and `install` is
+    # not written to the Cask. It is still checked as a template, so it must
+    # remain valid. The same applies to `uninstall` and `uninstall_steps`.
+    #
+    # All four `_steps` options are {{< g_inline_version "v2.19-unreleased" >}}.
+    #
     # Templates: allowed. {{< g_inline_version "v2.13" >}}
     hooks:
       pre:
-        install: |
-          system_command "/usr/bin/defaults", args: ["write", "com.example.app", "key", "value"]
-        uninstall: |
-          system_command "/usr/bin/defaults", args: ["delete", "com.example.app"]
+        install_steps: |
+          run "/usr/bin/defaults", args: ["write", "com.example.app", "key", "value"]
+        uninstall_steps: |
+          run "/usr/bin/defaults", args: ["delete", "com.example.app"]
       post:
-        install: |
-          system_command "/usr/bin/open", args: ["#{appdir}/MyApp.app"]
-        uninstall: |
-          system_command "/usr/bin/rm", args: ["-rf", "~/.myapp"]
+        install_steps: |
+          run "/usr/bin/open", args: ["{{ .AppDir }}/MyApp.app"]
+        uninstall_steps: |
+          remove "~/.myapp", recursive: true
 
     # Relative path to a Service that should be moved into the
     # ~/Library/Services folder on installation.
@@ -258,7 +269,7 @@ homebrew_casks:
 
 Casks are supposed to be signed, even if they are coming from a tap.
 
-GoReleaser can [sign and notarize both binaries and apps](/customization/sign/notarize/), but,
+GoReleaser can [sign and notarize both binaries and apps](/customization/sign/notarize/), but
 Apple charges a yearly fee for that.
 
 If you don't want to do it, you still have the option to tell macOS to remove
@@ -270,16 +281,16 @@ homebrew_casks:
     hooks:
       post:
         # replace foo with the actual binary name
-        install: |
-          if OS.mac?
-            system_command "/usr/bin/xattr", args: ["-dr", "com.apple.quarantine", "#{staged_path}/foo"]
+        install_steps: |
+          on_macos do
+            run "/usr/bin/xattr", args: ["-dr", "com.apple.quarantine", "{{ .StagedPath }}/foo"]
           end
 ```
 
 > [!CAUTION]
 > **What happens if I don't follow the steps above?**
 >
-> **Not following this might lead to your app/binary to not run.**
+> **Not following this might lead to your app or binary not running.**
 >
 > In these cases, users will see the infamous "_App Name is damaged and
 > cannot be opened_" alert.
@@ -287,7 +298,7 @@ homebrew_casks:
 > If you don't want to do any of the steps above, you may want to instruct
 > your users to run the appropriate `xattr` command manually.
 >
-> You may do so in using the `caveats` property, for example.
+> You may do so by using the `caveats` property, for example.
 
 > [!WARNING]
 > **xattr bypasses macOS security - use with caution**
@@ -308,7 +319,7 @@ homebrew_casks:
 {{< g_featpro >}}
 
 GoReleaser can also create a versioned Cask.
-For instance, you might want to make keep previous minor versions available to
+For instance, you might want to keep previous minor versions available to
 your users, so they easily downgrade and/or keep using an older version.
 
 To do that, use `alternative_names`:
@@ -414,7 +425,6 @@ homebrew_casks:
       # Replace <owner>/<repo> with your private GitHub repository.
       template: "https://github.com/<owner>/<repo>/releases/download/{{ .Tag }}/{{ .ArtifactName }}"
       using: GitHubPrivateRepositoryReleaseDownloadStrategy
-      verified: github.com/<owner>/<repo>/
 ```
 
 Users still need `HOMEBREW_GITHUB_API_TOKEN` exported in their

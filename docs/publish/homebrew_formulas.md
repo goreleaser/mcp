@@ -127,6 +127,8 @@ brews:
       ...
 
     # Packages your package depends on.
+    # Sorted by type: build, test, normal, recommended, optional.
+    # Within each type, sorted by name without regard to case, preserving the original names.
     dependencies:
       - name: git
         # Allow to specify the OS in which the dependency is required.
@@ -181,7 +183,7 @@ brews:
     # Custom post_install script for brew.
     # Could be used to do any additional work after the "install" script
     post_install: |
-    	etc.install "app-config.conf"
+      etc.install "app-config.conf"
       # ...
 
 {{% g_include file="includes/repository.md" %}}
@@ -257,7 +259,7 @@ Our suggestion is to create a `my-app-head.rb` file on your tap following
 {{< g_featpro >}}
 
 GoReleaser can also create a versioned formula.
-For instance, you might want to make keep previous minor versions available to
+For instance, you might want to keep previous minor versions available to
 your users, so they easily downgrade and/or keep using an older version.
 
 To do that, use `alternative_names`:

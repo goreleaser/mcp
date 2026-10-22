@@ -117,7 +117,8 @@ publishers:
     # Publish checksums.
     checksum: true
 
-    # Upload metadata.json and artifacts.json.
+    # Publish registered metadata artifacts, currently metadata.json.
+    # This does not select the artifacts.json index.
     meta: true
 
     # Publish signatures.
@@ -163,10 +164,11 @@ publishers:
     # This allows you to use the output of your custom publisher in templates
     # later, for instance, in the release notes.
     #
-    # The example bellow can be used with '{{ index .Outputs "foo.deb" }}'
+    # The example below can be used with '{{ index .Outputs "check-foo.deb" }}'
     # (assuming artifact name is 'foo.deb').
     #
     # Templates: allowed.
+    # {{< g_inline_pro >}}
     # {{< g_inline_version "v2.11" >}}
     output: "check-{{ .ArtifactName }}"
 ```
@@ -175,8 +177,8 @@ publishers:
 > This will run as the last step of the publishing phase.
 
 These settings should allow you to push your artifacts to any number of
-endpoints, which may require non-trivial authentication or has otherwise complex
-requirements.
+endpoints, which may require non-trivial authentication or have otherwise
+complex requirements.
 
 {{< g_templates >}}
 

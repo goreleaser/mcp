@@ -1,6 +1,7 @@
 # Email/SMTP
 
-For it to work, you'll need to set some environment variables on your pipeline:
+For it to work, you'll need to set the following environment variable on your
+pipeline:
 
 - `SMTP_PASSWORD`
 

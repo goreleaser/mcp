@@ -3,7 +3,7 @@
 This page is used to list deprecation notices across GoReleaser.
 
 Deprecated options are only removed on major versions of GoReleaser.
-Deprecated versions on features deemed experimental (you see a warning when
+Options deprecated on features deemed experimental (you see a warning when
 using them) might be removed in feature releases.
 
 Nevertheless, it's a good thing to keep your configuration up-to-date to prevent
@@ -45,6 +45,166 @@ foo: bar
 {{< /tabs >}}
 
 -->
+
+### homebrew_casks.hooks.pre.install
+
+> since v2.19-unreleased
+
+[Homebrew deprecated the `preflight` stanza](https://github.com/Homebrew/brew/pull/23366)
+in favor of `preflight_steps`.
+
+The new stanza does not accept arbitrary Ruby: it uses Homebrew's declarative
+install steps DSL. You must rewrite the body. `system_command` becomes `run`,
+`if OS.mac?` becomes `on_macos`, and `#{staged_path}` becomes `{{ .StagedPath }}`.
+
+{{< tabs >}}
+{{< tab "Before" >}}
+
+```yaml
+homebrew_casks:
+  - hooks:
+      pre:
+        install: |
+          system_command "/usr/bin/xattr", args: ["-dr", "com.apple.quarantine", "#{staged_path}/foo"]
+```
+
+{{< /tab >}}
+{{< tab "After" >}}
+
+```yaml
+homebrew_casks:
+  - hooks:
+      pre:
+        install_steps: |
+          run "/usr/bin/xattr", args: ["-dr", "com.apple.quarantine", "{{ .StagedPath }}/foo"]
+```
+
+{{< /tab >}}
+{{< /tabs >}}
+
+### homebrew_casks.hooks.post.install
+
+> since v2.19-unreleased
+
+Same as [`homebrew_casks.hooks.pre.install`](#homebrew_caskshookspreinstall), for
+the `postflight` stanza, which becomes `postflight_steps`.
+
+{{< tabs >}}
+{{< tab "Before" >}}
+
+```yaml
+homebrew_casks:
+  - hooks:
+      post:
+        install: |
+          system_command "/usr/bin/open", args: ["#{appdir}/MyApp.app"]
+```
+
+{{< /tab >}}
+{{< tab "After" >}}
+
+```yaml
+homebrew_casks:
+  - hooks:
+      post:
+        install_steps: |
+          run "/usr/bin/open", args: ["{{ .AppDir }}/MyApp.app"]
+```
+
+{{< /tab >}}
+{{< /tabs >}}
+
+### homebrew_casks.hooks.pre.uninstall
+
+> since v2.19-unreleased
+
+Same as [`homebrew_casks.hooks.pre.install`](#homebrew_caskshookspreinstall), for
+the `uninstall_preflight` stanza, which becomes `uninstall_preflight_steps`.
+
+{{< tabs >}}
+{{< tab "Before" >}}
+
+```yaml
+homebrew_casks:
+  - hooks:
+      pre:
+        uninstall: |
+          system_command "/usr/bin/defaults", args: ["delete", "com.example.app"]
+```
+
+{{< /tab >}}
+{{< tab "After" >}}
+
+```yaml
+homebrew_casks:
+  - hooks:
+      pre:
+        uninstall_steps: |
+          run "/usr/bin/defaults", args: ["delete", "com.example.app"]
+```
+
+{{< /tab >}}
+{{< /tabs >}}
+
+### homebrew_casks.hooks.post.uninstall
+
+> since v2.19-unreleased
+
+Same as [`homebrew_casks.hooks.pre.install`](#homebrew_caskshookspreinstall), for
+the `uninstall_postflight` stanza, which becomes `uninstall_postflight_steps`.
+
+{{< tabs >}}
+{{< tab "Before" >}}
+
+```yaml
+homebrew_casks:
+  - hooks:
+      post:
+        uninstall: |
+          system_command "/usr/bin/rm", args: ["-rf", "~/.myapp"]
+```
+
+{{< /tab >}}
+{{< tab "After" >}}
+
+```yaml
+homebrew_casks:
+  - hooks:
+      post:
+        uninstall_steps: |
+          remove "~/.myapp", recursive: true
+```
+
+{{< /tab >}}
+{{< /tabs >}}
+
+### homebrew_casks.url.verified
+
+> since v2.18.1
+
+[Homebrew deprecated it](https://github.com/Homebrew/brew/pull/23280), and now
+uses the default URL verification behavior.
+GoReleaser does not write it into the Cask anymore.
+
+{{< tabs >}}
+{{< tab "Before" >}}
+
+```yaml
+homebrew_casks:
+  - url:
+      verified: github.com/myorg/myrepo
+```
+
+{{< /tab >}}
+{{< tab "After" >}}
+
+```yaml
+homebrew_casks:
+  - {}
+```
+
+{{< /tab >}}
+{{< /tabs >}}
 
 ### dockers_v2.retry
 
@@ -495,10 +655,6 @@ homebrew_casks:
     # Optional: either set it to Casks, or remove it:
     directory: Casks
 
-    # Optional: helps pass `homebrew audit` if homepage is different from download domain:
-    url:
-      verified: github.com/myorg/myrepo
-
     # Optional: if your app/binary isn't signed and notarized, you'll need this:
     hooks:
       post:
@@ -546,7 +702,7 @@ used everywhere else.
 
 ```yaml
 archives:
-  builds: [a, b]
+  - builds: [a, b]
 ```
 
 {{< /tab >}}
@@ -554,13 +710,13 @@ archives:
 
 ```yaml
 archives:
-  ids: [a, b]
+  - ids: [a, b]
 ```
 
 {{< /tab >}}
 {{< /tabs >}}
 
-### snaps.builds
+### snapcrafts.builds {#snapsbuilds}
 
 > since v2.8
 
@@ -571,16 +727,16 @@ used everywhere else.
 {{< tab "Before" >}}
 
 ```yaml
-snaps:
-  builds: [a, b]
+snapcrafts:
+  - builds: [a, b]
 ```
 
 {{< /tab >}}
 {{< tab "After" >}}
 
 ```yaml
-snaps:
-  ids: [a, b]
+snapcrafts:
+  - ids: [a, b]
 ```
 
 {{< /tab >}}
@@ -598,7 +754,7 @@ used everywhere else.
 
 ```yaml
 nfpms:
-  builds: [a, b]
+  - builds: [a, b]
 ```
 
 {{< /tab >}}
@@ -606,7 +762,7 @@ nfpms:
 
 ```yaml
 nfpms:
-  ids: [a, b]
+  - ids: [a, b]
 ```
 
 {{< /tab >}}
@@ -741,7 +897,7 @@ We recommend you change it to `spdx`.
 
 > since v2.2
 
-Property renamed so its easier to reason about.
+Property renamed so it's easier to reason about.
 
 {{< tabs >}}
 {{< tab "Before" >}}
@@ -766,7 +922,7 @@ nightly:
 
 > since v2.2
 
-Property renamed so its easier to reason about.
+Property renamed so it's easier to reason about.
 
 {{< tabs >}}
 {{< tab "Before" >}}
@@ -1077,8 +1233,8 @@ Replace `bucket` with `repository`.
 ```yaml
 scoops:
   - bucket:
-      - name: foo
-        owner: bar
+      name: foo
+      owner: bar
 ```
 
 {{< /tab >}}
@@ -1087,8 +1243,8 @@ scoops:
 ```yaml
 scoops:
   - repository:
-      - name: foo
-        owner: bar
+      name: foo
+      owner: bar
 ```
 
 {{< /tab >}}
@@ -1106,8 +1262,8 @@ Replace `index` with `repository`.
 ```yaml
 krews:
   - index:
-      - name: foo
-        owner: bar
+      name: foo
+      owner: bar
 ```
 
 {{< /tab >}}
@@ -1116,8 +1272,8 @@ krews:
 ```yaml
 krews:
   - repository:
-      - name: foo
-        owner: bar
+      name: foo
+      owner: bar
 ```
 
 {{< /tab >}}
@@ -1135,8 +1291,8 @@ Replace `tap` with `repository`.
 ```yaml
 brews:
   - tap:
-      - name: foo
-        owner: bar
+      name: foo
+      owner: bar
 ```
 
 {{< /tab >}}
@@ -1145,8 +1301,8 @@ brews:
 ```yaml
 brews:
   - repository:
-      - name: foo
-        owner: bar
+      name: foo
+      owner: bar
 ```
 
 {{< /tab >}}

@@ -201,15 +201,11 @@ nfpms:
 
     # Contents to add to the package.
     # GoReleaser will automatically add the binaries.
+    # Supported source globs are expanded automatically.
     contents:
       # Basic file that applies to all packagers
       - src: path/to/foo
         dst: /usr/bin/foo
-
-        # Expand matching globs into individual files.
-        #
-        # Default: false.
-        expand: false
 
       # This will add all files in some/directory or in subdirectories at the
       # same level under the directory /etc. This means the tree structure in
@@ -802,7 +798,7 @@ Termux is the same format as `deb`, the differences are:
 
 - it uses a different file structure (`/data/data/com.termux/files/`)
 - `bindir` is automatically adjusted, but other files might require extra
-  configuration (see bellow)
+  configuration (see below)
 - it uses slightly different architecture names than Debian
 - it will only package binaries built for Android
 

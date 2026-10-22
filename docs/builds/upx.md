@@ -1,6 +1,6 @@
 # UPX
 
-Having small binary sizes are important, and Go is known for generating rather
+Small binary sizes are important, and Go is known for generating rather
 big binaries.
 
 GoReleaser has had `-s -w` as default `ldflags` since the beginning, which help
@@ -35,7 +35,7 @@ upx:
     goarch: [arm, amd64]
 
     # Filter by GOARM.
-    goarm: [8]
+    goarm: [7]
 
     # Filter by GOAMD64.
     goamd64: [v1]

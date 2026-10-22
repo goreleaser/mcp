@@ -21,7 +21,7 @@ artifactories:
 
 Prerequisites:
 
-- A running Artifactory instances
+- A running Artifactory instance
 - A user + password / client x509 certificate / API key with grants to upload
   an artifact
 
@@ -51,7 +51,9 @@ Supported variables:
 - `Arm`
 
 > [!NOTE]
-> Variables _Os_, _Arch_ and _Arm_ are only supported in upload mode `binary`.
+> `.Os`, `.Arch`, and `.Arm` come from the selected artifact's metadata in
+> both `binary` and `archive` modes. These fields are empty when the artifact
+> has no corresponding platform metadata.
 
 ### Username
 
@@ -75,9 +77,9 @@ environment variable is not used at all.
 
 The password or API key will be stored in an environment variable.
 The configured name of your Artifactory instance will be used.
-With this way we support auth for multiple instances.
+This way we support authentication for multiple instances.
 This also means that the `name` per configured instance needs to be unique
-per goreleaser configuration.
+per GoReleaser configuration.
 
 The name of the environment variable will be `ARTIFACTORY_NAME_SECRET`.
 If your instance is named `production`, you need to store the secret in the
@@ -113,7 +115,7 @@ setting the artifactory section with PEM encoded certificates on a YAML literal
 block like this:
 
 ```yaml
-puts:
+artifactories:
   - name: "some artifactory server with a private TLS certificate"
     #...(other settings)...
     trusted_certificates: |
@@ -181,8 +183,8 @@ artifactories:
 
     # Upload mode. Valid options are `binary` and `archive`.
     #
-    # If mode is `archive`, variables _Os_, _Arch_ and _Arm_ for target name
-    #   are not supported. In that case these variables are empty.
+    # In either mode, .Os, .Arch, and .Arm come from the selected artifact's
+    #   metadata and are empty when that metadata is absent.
     #
     # If mode is `binary`, you'll need to have the archives section setup with
     #   format "binary" as well.

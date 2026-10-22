@@ -32,7 +32,7 @@ changelog:
   #
   # Default:
   #    if 'git': '{{ .SHA }} {{ .Message }}'
-  #   otherwise: '{{ .SHA }}: {{ .Message }} ({{ with .Author.Username }}@{{ . }}{{ else }}{{ .Author.Name }} <{{ .Author.Email }}>{{ end }})'.
+  #   otherwise: '{{ .SHA }}: {{ .Message }} ({{ with .AuthorUsername }}@{{ . }}{{ else }}{{ .AuthorName }} <{{ .AuthorEmail }}>{{ end }})'.
   #
   # Extra template fields:
   # - `SHA`: the commit SHA1
@@ -99,8 +99,8 @@ changelog:
   # Providing no regex means all commits will be grouped under the default group.
   #
   # Matches are performed against the first line of the commit message only,
-  # prefixed with the commit SHA1, usually in the form of
-  # `<abbrev-commit>[:] <title-commit>`.
+  # without a SHA prefix. The format and abbrev settings do not affect matching.
+  # For example, '^feat:' matches a subject such as 'feat: add an option'.
   # Regex use RE2 syntax as defined here: https://github.com/google/re2/wiki/Syntax.
   #
   # Disabled when using 'github-native'.
@@ -192,6 +192,7 @@ changelog:
     # Which model to use.
     #
     # Defaults to the provider's default model.
+    # Required for Ollama.
     model: o1-mini
 
     # The prompt to use..
@@ -218,7 +219,7 @@ changelog:
         path: ./README.md
 ```
 
-The default prompt will ask it to write a short intro with outlining the most
+The default prompt will ask it to write a short intro outlining the most
 exciting features, merge dependency bumps of the same dependency together, and
 to not use emojis.
 
@@ -226,10 +227,18 @@ You can of course set anything you wish makes sense in the `prompt` field.
 Don't forget to give it the current release notes as well, available as
 `{{ .ReleaseNotes }}`.
 
-This is the [default
-prompt](https://gist.githubusercontent.com/caarlos0/419c8cb2bab28f7c53c7e228af3ab219/raw/70e3e7f0ba85b02a23692d150e3a0d1752c79d64/prompt.md)
-in case you're interested.
-
 You can test this by using the
 `goreleaser changelog` command.
+
+For Ollama, set `model` to a model available on your server. GoReleaser uses
+Ollama's OpenAI-compatible `/v1/chat/completions` endpoint. Set `OLLAMA_HOST` to
+change the server address; it defaults to `http://127.0.0.1:11434`. An OpenAI API
+key is not required, and OpenAI environment settings are not sent to Ollama.
+
+Anthropic responses may contain thinking blocks. GoReleaser skips those and
+concatenates all text blocks in order.
+
+If the AI returns empty or whitespace-only release notes, or reports that its
+output was truncated, GoReleaser fails instead of writing or publishing those
+notes.
 

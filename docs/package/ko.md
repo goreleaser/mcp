@@ -9,10 +9,10 @@ cached.
 
 > [!WARNING]
 > When on `--snapshot` mode, Ko will publish the image to `goreleaser.ko.local`.
-> If its a regular build, Ko will only run in the publishing phase.
+> If it's a regular build, Ko will only run in the publishing phase.
 
 > [!NOTE]
-> For Ko to work you still need to login, either with `docker login` or
+> For Ko to work you still need to log in, either with `docker login` or
 > something else.
 
 ```yaml {filename=".goreleaser.yaml"}
@@ -120,7 +120,7 @@ kos:
     sbom_directory: "out/sbom"
 
     # Ko publishes images to the local Docker daemon
-    # when Goreleaser is executed with the --snapshot flag.
+    # when GoReleaser is executed with the --snapshot flag.
     # Use the local_domain attribute to configure the local registry (e.g. kind.local).
     #
     # Default "goreleaser.ko.local" - local docker registry is used.
@@ -151,6 +151,16 @@ kos:
     env:
       - FOO=bar
       - SOMETHING=value
+
+    # Linux capabilities to set on the binary inside the image.
+    #
+    # Accepts the same values as Docker's --cap-add, e.g. 'net_bind_service',
+    # 'cap_net_bind_service' or 'NET_BIND_SERVICE'.
+    # Note: setting this disables ko's layer cache for this image.
+    #
+    # {{< g_inline_version "v2.19-unreleased" >}}
+    linux_capabilities:
+      - net_bind_service
 
     # Whether to disable this particular Ko configuration.
     #
@@ -210,7 +220,7 @@ kos:
 This will build the binaries for `linux/arm64`, `linux/amd64`, `darwin/amd64`
 and `darwin/arm64`, as well as the Docker images and manifest for Linux.
 
-# Signing KO manifests
+## Signing KO manifests
 
 KO will add the built manifest to the artifact list, so you can sign them with
 `docker_signs`:

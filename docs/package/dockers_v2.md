@@ -41,13 +41,9 @@ dockers_v2:
     # {{< g_inline_version "v2.17" >}}
     templated_dockerfile: "Dockerfile.tmpl"
 
-    # IDs to filter the binaries/packages.
-    #
-    # Make sure to only include the IDs of binaries you want to `COPY` in your
-    # Dockerfile.
-    #
-    # If you include IDs that don't exist or are not available for the current
-    # architecture being built, the build of the image will be skipped.
+    # IDs filter the binaries and packages copied into the build context.
+    # A missing match does not skip the image build.
+    # The Dockerfile must work with the selected files for each platform.
     ids:
       - mybuild
       - mynfpm
@@ -193,6 +189,8 @@ dockers_v2:
           # Working directory for the command.
           dir: "{{ .ContextDir }}"
           # Only run this hook if the template evaluates to `true`.
+          #
+          # {{< g_inline_pro >}}
           # {{< g_inline_version "v2.17" >}}
           if: '{{ eq .Runtime.Goarch "amd64" }}'
           # Extra env vars to inject into the hook.
@@ -358,9 +356,14 @@ The idea is that you reuse the previously built binaries instead of building
 them again when creating the Docker image.
 
 The build context itself is a temporary directory which contains the
-binaries and packages for the each of the defined target platforms.
+binaries and packages for each of the defined target platforms.
 You can then `COPY` them into your image (mind the use of `$TARGETPLATFORM`
 above).
+
+When a platform omits a CPU variant, GoReleaser selects baseline binaries and packages.
+For `linux/386`, `linux/ppc64le`, and `linux/riscv64`, these are `sse2`,
+`power8`, and `rva20u64`. To select a different build, include its variant in
+the platform, for example `linux/ppc64le/power9`.
 
 A corollary of it being a temporary directory is that
 **the context does not contain the source files**.

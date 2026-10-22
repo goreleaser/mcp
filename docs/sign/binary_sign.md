@@ -2,11 +2,13 @@
 
 {{< g_version "v2.2" >}}
 
-This can be used to archive the binaries with their signatures, instead of
-signing the whole archive.
+Use this to sign binaries before archiving, instead of signing the whole archive.
+Signatures are separate release assets and are not automatically included in
+archives. To include them, add the signature files to
+[`archives.files`](/customization/package/archives/).
 
-The default is configured to create a detached signature for the checksum files
-with [GnuPG](https://www.gnupg.org/), and your default key.
+The default creates a detached signature for each binary with
+[GnuPG](https://www.gnupg.org/) and your default key.
 
 To enable binary signing just add this to your configuration:
 
@@ -27,7 +29,7 @@ binary_signs:
 
     # Name of the signature file.
     #
-    # Default: '${artifact}_{{ .Os }}_{{ .Arch }}{{ with .Arm }}v{{ . }}{{ end }}{{ with .Mips }}_{{ . }}{{ end }}{{ if not (eq .Amd64 "v1") }}{{ .Amd64 }}{{ end }}'.
+    # Default: '${artifact}_{{ .Os }}_{{ .Arch }}{{ targetVariant . }}'.
     # Templates: allowed.
     signature: "${artifact}_sig"
 
@@ -49,14 +51,17 @@ binary_signs:
     #
     # Valid options are:
     # - none        no signing
-    # - binary:     the binaries
+    # - binary:     the binaries, including universal binaries
     #
     # Default: 'binary'.
     artifacts: binary
 
-    # IDs of the artifacts to sign.
+    # Build IDs of the binaries to sign.
     #
-    # If `artifacts` is checksum or source, this fields has no effect.
+    # To sign a macOS universal binary, use the `universal_binaries.id` here,
+    # not the IDs of the builds it was made from.
+    #
+    # Empty means all build IDs.
     ids:
       - foo
       - bar
@@ -142,8 +147,14 @@ binary_signs:
 Your users can then verify the signature with:
 
 ```sh
-cosign verify-blob -key cosign.pub -signature binary.sig binary
+cosign verify-blob --key cosign.pub --signature binary.sig binary
 ```
+
+## Limitations
+
+The same [limitations of the `signs` pipe](/customization/sign/sign/#limitations)
+apply: if you set `signature` or `certificate`, that file should exist once the
+command finishes, and GoReleaser warns when it does not.
 
 [cosign]: https://github.com/sigstore/cosign
 
